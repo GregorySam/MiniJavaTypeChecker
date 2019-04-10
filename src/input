@@ -1,28 +1,11 @@
 
 
 
-
-
 class Main
 {
   public static void main(String[] args) {
-
+        int i;
+        i=i;
   }
 
 }
-class A{
-     int i;
-     boolean flag;
-     int j;
-
- }
-
- class B extends A{
-     A type;
-     int k;
-     public int foo(){
-      
-      return k;
-      }
-
- }

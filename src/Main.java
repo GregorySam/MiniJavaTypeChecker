@@ -14,10 +14,11 @@ class Main {
 	    fis = new FileInputStream(args[0]);
 	    MiniJavaParser parser = new   MiniJavaParser(fis);
 
-	    // EvalVisitor eval = new EvalVisitor();
+	    STPopulatingVisitor STPV = new STPopulatingVisitor();
 	    Goal root = parser.Goal();
+
 		System.err.println("Program parsed successfully.");
-	    // System.out.println(root.accept(eval, null));
+	    System.out.println(root.accept(STPV, null));
 	}
 	catch(ParseException ex){
 	    System.out.println(ex.getMessage());

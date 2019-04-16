@@ -1,5 +1,4 @@
 import java.util.*;
-
 import syntaxtree.*;
 import visitor.*;
 
@@ -8,7 +7,9 @@ public class STPopulatingVisitor extends GJDepthFirst<String,String>{
 
     static Map m= new HashMap();
 
-    /**
+
+
+    /** Goal
      * Grammar production:
      * f0 -> MainClass()
      * f1 -> ( TypeDeclaration() )*
@@ -19,6 +20,9 @@ public class STPopulatingVisitor extends GJDepthFirst<String,String>{
        n.f0.accept(this,null);
        return "ok";
     }
+
+    /////////////////////////////////////////////////////////////////////////
+
 
     /**MainClass
      * Grammar production:
@@ -58,8 +62,9 @@ public class STPopulatingVisitor extends GJDepthFirst<String,String>{
         return "";
 
     }
+    //////////////////////////////////////////////////////////////////////////////
 
-    /**
+    /** VarDeclaration
      * Grammar production:
      * f0 -> Type()
      * f1 -> Identifier()
@@ -77,9 +82,11 @@ public class STPopulatingVisitor extends GJDepthFirst<String,String>{
         return "";
     }
 
+    ///////////////////////////////////////////////////////////////////
 
 
-    /**
+
+    /** Type
      * Grammar production:
      * f0 -> ArrayType()
      *       | BooleanType()
@@ -92,11 +99,31 @@ public class STPopulatingVisitor extends GJDepthFirst<String,String>{
         return n.f0.accept(this,null);
     }
 
+    public String visit(IntegerType n,String s)
+    {
+
+        return n.f0.tokenImage;
+    }
+
+    public String visit(BooleanType n,String s)
+    {
+
+        return n.f0.tokenImage;
+    }
+
+    public String visit(ArrayType n,String s)
+    {
+        return (n.f0.tokenImage+n.f1.tokenImage+n.f2.tokenImage);
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
 
 
 
 
-    /**
+
+    /**Statement
      * Grammar production:
      * f0 -> Block()
      *       | AssignmentStatement()
@@ -111,6 +138,54 @@ public class STPopulatingVisitor extends GJDepthFirst<String,String>{
         n.f0.accept(this,null);
         return "";
     }
+
+
+    /////////////////////////////////////////////////////////////////////////////
+
+    /**ArrayAssignmentStatement()
+     * Grammar production:
+     * f0 -> Identifier()
+     * f1 -> "["
+     * f2 -> Expression()
+     * f3 -> "]"
+     * f4 -> "="
+     * f5 -> Expression()
+     * f6 -> ";"
+     */
+
+    public String visit(ArrayAssignmentStatement n,String s)
+    {
+
+        n.f0.accept(this,null);
+        n.f2.accept(this,null);
+        n.f5.accept(this,null);
+        return "";
+
+    }
+
+
+    ///////////////////////////////////////////////
+
+
+
+
+    /**Block
+     * Grammar production:
+     * f0 -> "{"
+     * f1 -> ( Statement() )*
+     * f2 -> "}"
+     */
+
+    public String visit(Block n,String s)
+    {
+        return n.f1.accept(this,null);
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////
+
+
+
 
 
     /**

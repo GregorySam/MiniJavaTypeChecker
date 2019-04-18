@@ -5,7 +5,51 @@ import visitor.*;
 
 public class STPopulatingVisitor extends GJDepthFirst<String,String>{
 
-    static Map m= new HashMap();
+    static private Map m= new HashMap();
+
+
+    static private String OperationCheck(String operator,String t1,String t2)
+    {
+
+        if(!t1.equals(t2)){return "error";}
+
+        if(operator.equals("+") || operator.equals("-") || operator.equals("*"))
+        {
+            if(t1.equals("int") && t2.equals("int"))
+            {
+                return "int";
+            }
+            else
+            {
+                return "error";
+            }
+        }
+
+        if(operator.equals("<"))
+        {
+            if(t1.equals("int") && t2.equals("int"))
+            {
+                return "boolean";
+            }
+            else
+            {
+                return "error";
+            }
+        }
+
+        if(operator.equals("&&"))
+        {
+            if(t1.equals("int") && t2.equals("int"))
+            {
+                return "int";
+            }
+            else if(t1.equals("boolean") && t2.equals("boolean"))
+            {
+                return "boolean";
+            }
+        }
+        return "error";
+    }
 
 
 
@@ -48,8 +92,8 @@ public class STPopulatingVisitor extends GJDepthFirst<String,String>{
 
     public String visit(MainClass n,String s)
     {
-        m.put(n.f1.accept(this,null),"class");
-        m.put(n.f11.accept(this,null),"String");
+        m.put(n.f1.accept(this,"declaration"),"class");
+        m.put(n.f11.accept(this,"declaration"),"String");
 
         if(n.f14.present())
         {
@@ -75,10 +119,10 @@ public class STPopulatingVisitor extends GJDepthFirst<String,String>{
     {
         String s1,s2;
 
-        s1=n.f1.accept(this,null);
+        s1=n.f1.accept(this,"declaration");
         s2=n.f0.accept(this,null);
 
-        m.put(n.f1.accept(this,null),n.f0.accept(this,null));
+        m.put(s1,s2);
         return "";
     }
 
@@ -199,21 +243,184 @@ public class STPopulatingVisitor extends GJDepthFirst<String,String>{
     public String visit(AssignmentStatement n,String s)
     {
         //if f0 exists in map
-        String id,type1;
+        String type1,type2;
 
-        id=n.f0.accept(this,null);
-        type1=m.get(id).toString();
+        type1=n.f0.accept(this,null);
 
         if(type1!="int" && type1!="boolean") {
             System.out.println("error");
             System.exit(0);
         }
-        return "";
 
-        //if value of f0 = value of f2
+        type2=n.f2.accept(this,null);
+
+        if(type2.equals(type1))
+        {
+            return "";
+        }
+        else
+        {
+            //error
+            System.out.println("eorro");
+            return "";
+        }
 
 
     }
+/////////////////////////////////////////////////////////////////////////////////
+    /**Expression
+     * Grammar production:
+     * f0 -> AndExpression()
+     *       | CompareExpression()
+     *       | PlusExpression()
+     *       | MinusExpression()
+     *       | TimesExpression()
+     *       | ArrayLookup()
+     *       | ArrayLength()
+     *       | MessageSend()
+     *       | Clause()
+     */
+
+
+    public String visit(Expression n,String s)
+    {
+        return n.f0.accept(this,null);
+
+    }
+
+    public String visit(AndExpression n,String s)
+    {
+        //if f0 type= f2 type
+        String type1,type2;
+
+
+
+        type1=n.f0.accept(this,null);
+        type2=n.f2.accept(this,null);
+
+
+        return OperationCheck("&&",type1,type2);
+
+    }
+
+    public String visit(CompareExpression n,String s)
+    {
+
+        String type1,type2;
+
+        type1=n.f0.accept(this,null);
+        type2=n.f2.accept(this,null);
+
+        return OperationCheck("<",type1,type2);
+
+
+    }
+     public String visit(PlusExpression n,String s)
+     {
+         String type1,type2;
+
+         type1=n.f0.accept(this,null);
+         type2=n.f2.accept(this,null);
+
+         return OperationCheck("+",type1,type2);
+     }
+
+    public String visit(MinusExpression n,String s)
+    {
+        String type1,type2;
+
+        type1=n.f0.accept(this,null);
+        type2=n.f2.accept(this,null);
+
+        return OperationCheck("-",type1,type2);
+    }
+
+    public String visit(TimesExpression n,String s)
+    {
+        String type1,type2;
+
+        type1=n.f0.accept(this,null);
+        type2=n.f2.accept(this,null);
+
+        return OperationCheck("*",type1,type2);
+    }
+
+    public String visit(ArrayLookup n,String s)
+    {
+        String type1,type2;
+
+        type1=n.f0.accept(this,null);
+        type2=n.f2.accept(this,null);
+
+        if(!type2.equals("int"))
+        {
+            //error
+            return "";
+        }
+
+        return type1;
+    }
+
+    public String visit(ArrayLength n,String s)
+    {
+        String type;
+
+        type=n.f0.accept(this,null);
+        if(!type.equals("int[]"))
+        {
+            //error
+            return "";
+        }
+
+        return "int";
+    }
+
+    public String visit(Clause n,String s)
+    {
+        return n.f0.accept(this,null);
+    }
+
+///////////////////////////////////////////////////////////////////////////////
+
+    /**Clause
+     * Grammar production:
+     * f0 -> NotExpression()
+     *       | PrimaryExpression()
+     */
+
+ ///////////////////////////////////////////////////////////////////////////
+
+    /**PrimaryExpression
+     * Grammar production:
+     * f0 -> IntegerLiteral()
+     *       | TrueLiteral()
+     *       | FalseLiteral()
+     *       | Identifier()
+     *       | ThisExpression()
+     *       | ArrayAllocationExpression()
+     *       | AllocationExpression()
+     *       | BracketExpression()
+     */
+
+    public String visit(IntegerLiteral n,String s)
+    {
+        return "int";
+    }
+
+    public String visit(ArrayAllocationExpression n,String s)
+    {
+        String type;
+
+        type=n.f3.accept(this,null);
+
+        if(!type.equals("int"))
+        {
+            //error
+            return "";
+        }
+        return type;
+    }
+
 
 
 
@@ -229,7 +436,27 @@ public class STPopulatingVisitor extends GJDepthFirst<String,String>{
 
     public String visit(Identifier n,String s)
     {
-        return n.f0.tokenImage;
+        if(s!=null && s.equals("declaration"))
+        {
+            return n.f0.tokenImage;
+        }
+        else
+        {
+            Object type;
+
+
+            type=m.get(n.f0.tokenImage);
+            if(type==null)
+            {
+                //errror
+                System.out.println("error");
+                System.exit(0);
+            }
+            return type.toString();
+
+        }
+
+
 
     }
 

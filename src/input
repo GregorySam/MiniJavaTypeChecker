@@ -4,13 +4,30 @@
 class Main
 {
   public static void main(String[] args) {
+
+
+        int[] A;
+        boolean b;
+
         int i;
         int j;
-
-        i=i+j;
-        j=k+i;
 
 
   }
 
 }
+
+class A {
+    int i;
+    int j;
+    boolean b;
+
+    public int k(int a,boolean b)
+    {
+        int l;
+        int m;
+
+        return i;
+    }
+  }
+

@@ -1,56 +1,33 @@
-import java.util.*;
 import syntaxtree.*;
 import visitor.*;
 
-
-public class STPopulatingVisitor extends GJDepthFirst<String,String>{
-
-    static private Map m= new HashMap();
+import javax.lang.model.type.PrimitiveType;
 
 
-    static private String OperationCheck(String operator,String t1,String t2)
+public class STPopulatingVisitor extends GJDepthFirst<String,ScopeType>{
+
+    static private STDataStructure STD=new STDataStructure();
+
+
+    private Type StringToType(String s_type)
     {
-
-        if(!t1.equals(t2)){return "error";}
-
-        if(operator.equals("+") || operator.equals("-") || operator.equals("*"))
+        if(s_type.equals("int"))
         {
-            if(t1.equals("int") && t2.equals("int"))
-            {
-                return "int";
-            }
-            else
-            {
-                return "error";
-            }
+            return Type.INT;
         }
-
-        if(operator.equals("<"))
+        else if(s_type.equals("boolean"))
         {
-            if(t1.equals("int") && t2.equals("int"))
-            {
-                return "boolean";
-            }
-            else
-            {
-                return "error";
-            }
+            return Type.BOOLEAN;
         }
-
-        if(operator.equals("&&"))
+        else if(s_type.equals("int[]"))
         {
-            if(t1.equals("int") && t2.equals("int"))
-            {
-                return "int";
-            }
-            else if(t1.equals("boolean") && t2.equals("boolean"))
-            {
-                return "boolean";
-            }
+            return Type.INT_ARRAY;
         }
-        return "error";
+        else
+        {
+            return null;
+        }
     }
-
 
 
     /** Goal
@@ -60,9 +37,14 @@ public class STPopulatingVisitor extends GJDepthFirst<String,String>{
      * f2 -> <EOF>
      */
 
-    public String visit(Goal n,String a){
-       n.f0.accept(this,null);
-       return "ok";
+    public String visit(Goal n, ScopeType st){
+
+
+        //n.f0.accept(this,null);
+        n.f1.accept(this,null);
+
+        System.out.println("Program evaluated successfully");
+        return null;
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -90,20 +72,21 @@ public class STPopulatingVisitor extends GJDepthFirst<String,String>{
      * f17 -> "}"
      */
 
-    public String visit(MainClass n,String s)
+    public String visit(MainClass n, ScopeType st)
     {
-        m.put(n.f1.accept(this,"declaration"),"class");
-        m.put(n.f11.accept(this,"declaration"),"String");
+
+//        m.put(n.f1.accept(this,"declaration"),"class");
+//        m.put(n.f11.accept(this,"declaration"),"String");
 
         if(n.f14.present())
         {
-            n.f14.accept(this,null);
+           n.f14.accept(this,STD.GetMainVariables());
         }
         if(n.f15.present())
         {
             n.f15.accept(this,null);
         }
-        return "";
+        return null;
 
     }
     //////////////////////////////////////////////////////////////////////////////
@@ -115,15 +98,32 @@ public class STPopulatingVisitor extends GJDepthFirst<String,String>{
      * f2 -> ";"
      */
 
-    public String visit(VarDeclaration n,String s)
+    public String visit(VarDeclaration n, ScopeType ST)
     {
-        String s1,s2;
+        String type;
+        String id;
+        Type t=Type.INT;
 
-        s1=n.f1.accept(this,"declaration");
-        s2=n.f0.accept(this,null);
+        type=n.f0.accept(this,null);
+        id=n.f1.accept(this,null);
 
-        m.put(s1,s2);
-        return "";
+        t=StringToType(type);
+
+        if(t==null)
+        {
+            return null;
+        }
+
+
+        if(!ST.InsertVariable(id,t))
+        {
+            System.out.println("Error");
+            System.exit(0);
+        }
+
+
+
+        return null;
     }
 
     ///////////////////////////////////////////////////////////////////
@@ -138,288 +138,164 @@ public class STPopulatingVisitor extends GJDepthFirst<String,String>{
      *       | Identifier()
      */
 
-    public String visit(Type n,String s)
-    {
-        return n.f0.accept(this,null);
-    }
 
-    public String visit(IntegerType n,String s)
+    public String visit(IntegerType n, ScopeType st)
     {
 
         return n.f0.tokenImage;
     }
 
-    public String visit(BooleanType n,String s)
+    public String visit(BooleanType n, ScopeType st)
     {
 
         return n.f0.tokenImage;
     }
 
-    public String visit(ArrayType n,String s)
+    public String visit(ArrayType n, ScopeType st)
     {
         return (n.f0.tokenImage+n.f1.tokenImage+n.f2.tokenImage);
     }
 
 
     ////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-    /**Statement
+    /**TypeDeclaration
      * Grammar production:
-     * f0 -> Block()
-     *       | AssignmentStatement()
-     *       | ArrayAssignmentStatement()
-     *       | IfStatement()
-     *       | WhileStatement()
-     *       | PrintStatement()
+     * f0 -> ClassDeclaration()
+     *       | ClassExtendsDeclaration()
      */
 
-    public String visit(Statement n,String s)
-    {
-        n.f0.accept(this,null);
-        return "";
-    }
-
-
-    /////////////////////////////////////////////////////////////////////////////
-
-    /**ArrayAssignmentStatement()
-     * Grammar production:
-     * f0 -> Identifier()
-     * f1 -> "["
-     * f2 -> Expression()
-     * f3 -> "]"
-     * f4 -> "="
-     * f5 -> Expression()
-     * f6 -> ";"
-     */
-
-    public String visit(ArrayAssignmentStatement n,String s)
+    public String visit(TypeDeclaration n,ScopeType st)
     {
 
         n.f0.accept(this,null);
-        n.f2.accept(this,null);
-        n.f5.accept(this,null);
-        return "";
-
+        return null;
     }
 
-
-    ///////////////////////////////////////////////
-
-
-
-
-    /**Block
+    /**ClassDeclaration
      * Grammar production:
-     * f0 -> "{"
-     * f1 -> ( Statement() )*
-     * f2 -> "}"
+     * f0 -> "class"
+     * f1 -> Identifier()
+     * f2 -> "{"
+     * f3 -> ( VarDeclaration() )*
+     * f4 -> ( MethodDeclaration() )*
+     * f5 -> "}"
      */
 
-    public String visit(Block n,String s)
+    public String visit(ClassDeclaration n,ScopeType st)
     {
-        return n.f1.accept(this,null);
+        String id;
+        id=n.f1.accept(this,null);
+
+        STD.InsertClass(id);
+        ClassType ct;
+        ct=STD.GetClass(id);
+
+
+        n.f3.accept(this,ct);
+        n.f4.accept(this,ct);
+
+        return null;
     }
 
-
-    /////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-    /**
-     * Grammar production:
-     * f0 -> Identifier()
-     * f1 -> "="
-     * f2 -> Expression()
-     * f3 -> ";"
-     */
-
-    public String visit(AssignmentStatement n,String s)
+    public String visit(MethodDeclaration n,ScopeType st)
     {
-        //if f0 exists in map
-        String type1,type2;
+        String type;
+        String id;
 
-        type1=n.f0.accept(this,null);
+        ClassType ct;
+        ct=(ClassType)st;
 
-        if(type1!="int" && type1!="boolean") {
-            System.out.println("error");
+        Type t=Type.INT;
+
+        type=n.f1.accept(this,null);
+        id=n.f2.accept(this,null);
+
+        t=StringToType(type);
+
+        if(t==null)
+        {
+            return null;
+        }
+
+
+        if(!ct.InsertMethod(id,t))
+        {
+            System.out.println("Error");
             System.exit(0);
         }
 
-        type2=n.f2.accept(this,null);
+        MethodType mt;
+        mt=ct.GetMethod(id);
 
-        if(type2.equals(type1))
-        {
-            return "";
-        }
-        else
-        {
-            //error
-            System.out.println("eorro");
-            return "";
-        }
+        n.f4.accept(this,mt);
+        n.f7.accept(this,mt);
 
+
+        return "";
 
     }
-/////////////////////////////////////////////////////////////////////////////////
-    /**Expression
+
+
+
+    ///////////////////////////////////////////////////////////////////
+    /**FormalParameterList
      * Grammar production:
-     * f0 -> AndExpression()
-     *       | CompareExpression()
-     *       | PlusExpression()
-     *       | MinusExpression()
-     *       | TimesExpression()
-     *       | ArrayLookup()
-     *       | ArrayLength()
-     *       | MessageSend()
-     *       | Clause()
+     * f0 -> FormalParameter()
+     * f1 -> FormalParameterTail()
      */
 
-
-    public String visit(Expression n,String s)
+    public String visit(FormalParameterList n,ScopeType st)
     {
-        return n.f0.accept(this,null);
+
+        MethodType mt=(MethodType)st;
+
+        n.f0.accept(this,mt);
+        n.f1.accept(this,mt);
+        return null;
 
     }
 
-    public String visit(AndExpression n,String s)
+    public String visit(FormalParameter n,ScopeType st)
     {
-        //if f0 type= f2 type
-        String type1,type2;
+        String id,type;
+        Type t;
 
-
-
-        type1=n.f0.accept(this,null);
-        type2=n.f2.accept(this,null);
-
-
-        return OperationCheck("&&",type1,type2);
-
-    }
-
-    public String visit(CompareExpression n,String s)
-    {
-
-        String type1,type2;
-
-        type1=n.f0.accept(this,null);
-        type2=n.f2.accept(this,null);
-
-        return OperationCheck("<",type1,type2);
-
-
-    }
-     public String visit(PlusExpression n,String s)
-     {
-         String type1,type2;
-
-         type1=n.f0.accept(this,null);
-         type2=n.f2.accept(this,null);
-
-         return OperationCheck("+",type1,type2);
-     }
-
-    public String visit(MinusExpression n,String s)
-    {
-        String type1,type2;
-
-        type1=n.f0.accept(this,null);
-        type2=n.f2.accept(this,null);
-
-        return OperationCheck("-",type1,type2);
-    }
-
-    public String visit(TimesExpression n,String s)
-    {
-        String type1,type2;
-
-        type1=n.f0.accept(this,null);
-        type2=n.f2.accept(this,null);
-
-        return OperationCheck("*",type1,type2);
-    }
-
-    public String visit(ArrayLookup n,String s)
-    {
-        String type1,type2;
-
-        type1=n.f0.accept(this,null);
-        type2=n.f2.accept(this,null);
-
-        if(!type2.equals("int"))
-        {
-            //error
-            return "";
-        }
-
-        return type1;
-    }
-
-    public String visit(ArrayLength n,String s)
-    {
-        String type;
+        MethodType mt=(MethodType)st;
 
         type=n.f0.accept(this,null);
-        if(!type.equals("int[]"))
+        id=n.f1.accept(this,null);
+
+        t=StringToType(type);
+
+        if(t==null)
         {
-            //error
-            return "";
+            return null;
         }
 
-        return "int";
+        mt.InsertVariable(id,t);
+        return null;
     }
 
-    public String visit(Clause n,String s)
+    public String visit(FormalParameterTail n,ScopeType st)
     {
-        return n.f0.accept(this,null);
+        MethodType mt=(MethodType)st;
+
+        n.f0.accept(this,mt);
+        return null;
     }
 
-///////////////////////////////////////////////////////////////////////////////
-
-    /**Clause
-     * Grammar production:
-     * f0 -> NotExpression()
-     *       | PrimaryExpression()
-     */
-
- ///////////////////////////////////////////////////////////////////////////
-
-    /**PrimaryExpression
-     * Grammar production:
-     * f0 -> IntegerLiteral()
-     *       | TrueLiteral()
-     *       | FalseLiteral()
-     *       | Identifier()
-     *       | ThisExpression()
-     *       | ArrayAllocationExpression()
-     *       | AllocationExpression()
-     *       | BracketExpression()
-     */
-
-    public String visit(IntegerLiteral n,String s)
+    public String visit(FormalParameterTerm n,ScopeType st)
     {
-        return "int";
+        MethodType mt=(MethodType)st;
+
+        n.f1.accept(this,mt);
+        return null;
     }
 
-    public String visit(ArrayAllocationExpression n,String s)
-    {
-        String type;
+    ////////////////////////////////////////////////////////////////
 
-        type=n.f3.accept(this,null);
 
-        if(!type.equals("int"))
-        {
-            //error
-            return "";
-        }
-        return type;
-    }
+
 
 
 
@@ -434,28 +310,10 @@ public class STPopulatingVisitor extends GJDepthFirst<String,String>{
      * f0 -> <IDENTIFIER>
      */
 
-    public String visit(Identifier n,String s)
+    public String visit(Identifier n, ScopeType st)
     {
-        if(s!=null && s.equals("declaration"))
-        {
-            return n.f0.tokenImage;
-        }
-        else
-        {
-            Object type;
 
-
-            type=m.get(n.f0.tokenImage);
-            if(type==null)
-            {
-                //errror
-                System.out.println("error");
-                System.exit(0);
-            }
-            return type.toString();
-
-        }
-
+       return n.f0.tokenImage;
 
 
     }

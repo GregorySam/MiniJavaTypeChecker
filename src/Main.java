@@ -1,6 +1,6 @@
 import syntaxtree.*;
 import minijava.*;
-import visitor.*;
+
 import java.io.*;
 
 class Main {
@@ -19,6 +19,10 @@ class Main {
 
 		System.err.println("Program parsed successfully.");
 	    System.out.println(root.accept(STPV, null));
+
+		STPClassTypesVisitor STPCTV=new STPClassTypesVisitor(STPV.GetSTD());
+		System.out.println(root.accept(STPCTV, null));
+
 	}
 	catch(ParseException ex){
 	    System.out.println(ex.getMessage());

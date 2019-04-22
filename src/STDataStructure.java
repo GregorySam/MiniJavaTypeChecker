@@ -1,23 +1,16 @@
-import com.sun.source.tree.Scope;
-
-import java.lang.reflect.Method;
 import java.util.*;
 
-enum Type
-{
-    INT,
-    INT_ARRAY,
-    BOOLEAN,
-    CLASS
-}
+
+
 
 
 
 class ScopeType
 {
-    private HashMap<String, Type> Variables;
+    protected HashMap<String, Object> Variables;
 
-    public boolean InsertVariable(String id, Type p)
+
+    public boolean InsertVariable(String id, Object p)
     {
         if(Variables.containsKey(id))
         {
@@ -29,22 +22,56 @@ class ScopeType
             return true;
         }
     }
+
+
     public ScopeType()
     {
-        Variables=new HashMap<>();
+        Variables =new HashMap<>();
     }
+
+    public HashMap<String, Object> GetVariables()
+    {
+        return Variables;
+    }
+
+
+
 }
 
 class MethodType extends ScopeType
 {
     private String name;
-    Type t;
+    private String id;
+    private String type;
 
-    public MethodType(String n,Type t)
+    public MethodType(String name,String type)
     {
-        name=n;
-        this.t=t;
+        this.name=name;
+        this.type=type;
+        this.id=type+name;
 
+
+    }
+
+    public void ChangeId(String a)
+    {
+        id=id+a;
+    }
+
+    public String GetName()
+    {
+        return name;
+    }
+
+    public String GetType()
+    {
+        return type;
+    }
+
+
+    public String GetId()
+    {
+        return id;
     }
 
 }
@@ -52,36 +79,76 @@ class MethodType extends ScopeType
 class ClassType extends ScopeType
 {
     private String name;
-    private String BaseClass;
+    private ClassType BaseClass;
     private HashMap<String, MethodType> Methods;
 
     public ClassType(String n)
     {
         name=n;
         Methods=new HashMap<>();
+        BaseClass=null;
     }
 
 
-    public boolean InsertMethod(String id, Type p)
+    public boolean InsertMethod(MethodType MT)
     {
-        MethodType M=new MethodType(id,p);
 
-        if(Methods.containsKey(id))
+        if(BaseClass==null)
         {
-            return false;
+            if(Methods.containsKey(MT.GetName())) {
+                return false;
+
+            }
+            else
+            {
+                Methods.put(MT.GetName(),MT);
+                return true;
+            }
+
         }
         else
         {
-            Methods.put(id,M);
-            return true;
-        }
 
+            if(!BaseClass.GetMethods().containsKey(MT.GetName()))
+            {
+                Methods.put(MT.GetName(),MT);
+                return true;
+            }
+            else
+            {
+                String base_funid=BaseClass.GetMethod(MT.GetName()).GetId();
+                String class_funid=MT.GetId();
+                if(base_funid.equals(class_funid))
+                {
+                    Methods.put(MT.GetName(),MT);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+
+        }
+    }
+
+
+    public void SetBaseClass(ClassType id)
+    {
+        BaseClass=id;
     }
 
     public MethodType GetMethod(String id)
     {
         return Methods.get(id);
     }
+
+    public HashMap<String, MethodType> GetMethods()
+    {
+        return Methods;
+    }
+
 
 
 }
@@ -92,35 +159,17 @@ public class STDataStructure {
     private ScopeType MainVariables;
     private HashMap<String,ClassType> Classes;
 
-    //create connected graph of classes
     public STDataStructure(){
         MainVariables=new ScopeType();
 
         Classes=new HashMap<>();
     }
 
-//    public Type GetPrimitiveType(String id)
-//    {
-//        Type t;
-//
-//        t=PrimitiveTypes.get(id);
-//
-//        return t;
-//    }
+
     public ScopeType GetMainVariables()
     {
         return MainVariables;
     }
-
-    public boolean InsertPrimitiveType(String id, Type pt)
-    {
-       return this.MainVariables.InsertVariable(id,pt);
-
-    }
-//    public boolean FindClass(String id)
-//    {
-//
-//    }
 
     public boolean InsertClass(String id)
     {
@@ -142,31 +191,11 @@ public class STDataStructure {
     {
         return Classes.get(id);
     }
-//
-//    public boolean InsertClassVariable(String class_id, String v_id, Type p)
-//    {
-//        ClassType c=Classes.get(class_id);
-//
-//        return c.InsertVariable(v_id,p);
-//
-//    }
-//
-//    public boolean InsertClassMethod(String class_id, String m_id, Type p)
-//    {
-//        ClassType c=Classes.get(class_id);
-//
-//        return c.InsertMethod(m_id,p);
-//
-//    }
-//
-//    public boolean InsertClassMethodVariable(String class_id, String m_id, String v_id, Type p)
-//    {
-//        ClassType c=Classes.get(class_id);
-//        MethodType m=c.GetMethod(m_id);
-//
-//        return m.InsertVariable(v_id,p);
-//
-//    }
+
+    public boolean FindClass(String id)
+    {
+        return Classes.containsKey(id);
+    }
 
 
 

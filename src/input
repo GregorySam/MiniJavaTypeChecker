@@ -5,12 +5,8 @@ class Main
 {
   public static void main(String[] args) {
 
-
-        int[] A;
         boolean b;
 
-        int i;
-        int j;
 
 
   }
@@ -18,16 +14,25 @@ class Main
 }
 
 class A {
-    int i;
+    B s;
+
     int j;
-    boolean b;
 
-    public int k(int a,boolean b)
-    {
-        int l;
-        int m;
-
+    public A foo(A a){
         return i;
+
     }
-  }
+ }
+
+class B extends A{
+    int k;
+
+  public A foo(A n){
+        return i;
+
+    }
+
+
+}
+
 

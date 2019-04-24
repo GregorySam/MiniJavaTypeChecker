@@ -5,6 +5,8 @@ import java.util.*;
 
 
 
+
+
 class ScopeType
 {
     protected HashMap<String, Object> Variables;
@@ -32,6 +34,29 @@ class ScopeType
     public HashMap<String, Object> GetVariables()
     {
         return Variables;
+    }
+
+    public String GetType(String id)
+    {
+        if(Variables.get(id)==null)
+        {
+            return null;
+        }
+        else
+        {
+            Object o_type;
+            String str_type;
+
+            o_type=Variables.get(id);
+            str_type=o_type.toString();
+
+            if(!str_type.equals("int") && !str_type.equals("int[]") && !str_type.equals("boolean"))
+            {
+                ClassType ct=(ClassType)o_type;
+                return ct.GetName();
+            }
+            return str_type;
+        }
     }
 
 
@@ -93,17 +118,20 @@ class ClassType extends ScopeType
     public boolean InsertMethod(MethodType MT)
     {
 
+
+        if(Methods.containsKey(MT.GetName())) {
+            return false;
+
+        }
+
+
         if(BaseClass==null)
         {
-            if(Methods.containsKey(MT.GetName())) {
-                return false;
 
-            }
-            else
-            {
-                Methods.put(MT.GetName(),MT);
-                return true;
-            }
+
+            Methods.put(MT.GetName(),MT);
+            return true;
+
 
         }
         else
@@ -132,6 +160,8 @@ class ClassType extends ScopeType
 
         }
     }
+
+    public String GetName(){return name;}
 
 
     public void SetBaseClass(ClassType id)

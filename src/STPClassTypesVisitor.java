@@ -55,17 +55,13 @@ public class STPClassTypesVisitor extends GJDepthFirst<String,ScopeType> {
     public String visit(MainClass n, ScopeType st)
     {
 
-//        m.put(n.f1.accept(this,"declaration"),"class");
-//        m.put(n.f11.accept(this,"declaration"),"String");
+
 
         if(n.f14.present())
         {
             n.f14.accept(this,STD.GetMainVariables());
         }
-        if(n.f15.present())
-        {
-            n.f15.accept(this,null);
-        }
+
         return null;
 
     }

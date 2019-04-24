@@ -66,10 +66,7 @@ public class STPopulatingVisitor extends GJDepthFirst<String,ScopeType>{
         {
            n.f14.accept(this,STD.GetMainVariables());
         }
-        if(n.f15.present())
-        {
-            n.f15.accept(this,null);
-        }
+
         return null;
 
     }

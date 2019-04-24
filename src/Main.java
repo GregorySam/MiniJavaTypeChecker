@@ -23,6 +23,10 @@ class Main {
 		STPClassTypesVisitor STPCTV=new STPClassTypesVisitor(STPV.GetSTD());
 		System.out.println(root.accept(STPCTV, null));
 
+		TypeCheckerVisitor TCV=new TypeCheckerVisitor(STPV.GetSTD());
+		System.out.println(root.accept(TCV, null));
+
+
 	}
 	catch(ParseException ex){
 	    System.out.println(ex.getMessage());

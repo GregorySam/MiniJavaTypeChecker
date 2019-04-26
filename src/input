@@ -5,14 +5,14 @@ class Main
 {
   public static void main(String[] args) {
 
-        boolean b1;
-        boolean b2;
-        int j;
-        int[] A;
+    A a;
 
 
 
+    int k;
+    int[] A;
 
+    a=a.bla();
 
 
 
@@ -20,4 +20,34 @@ class Main
   }
 
 }
+
+class A{
+
+    int j;
+
+    public A bla()
+    {
+        A b;
+
+        return b;
+    }
+
+
+
+}
+
+class B extends A
+{
+    int k;
+    public A bla()
+    {
+        A b;
+
+        return b;
+    }
+
+}
+
+
+
 

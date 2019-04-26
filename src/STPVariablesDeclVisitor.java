@@ -1,18 +1,17 @@
 import syntaxtree.*;
-import visitor.*;
+import visitor.GJDepthFirst;
+
+public class STPVariablesDeclVisitor extends GJDepthFirst<String,ScopeType> {
+
+    private STDataStructure STD;
 
 
-public class STPopulatingVisitor extends GJDepthFirst<String,ScopeType>{
 
-    private STDataStructure STD=new STDataStructure();
 
-    public STDataStructure GetSTD()
+    public STPVariablesDeclVisitor(STDataStructure newSTD)
     {
-        return STD;
+        STD=newSTD;
     }
-
-
-
 
     /** Goal
      * Grammar production:
@@ -30,9 +29,6 @@ public class STPopulatingVisitor extends GJDepthFirst<String,ScopeType>{
         System.out.println("Program evaluated successfully");
         return null;
     }
-
-    /////////////////////////////////////////////////////////////////////////
-
 
     /**MainClass
      * Grammar production:
@@ -59,12 +55,11 @@ public class STPopulatingVisitor extends GJDepthFirst<String,ScopeType>{
     public String visit(MainClass n, ScopeType st)
     {
 
-//        m.put(n.f1.accept(this,"declaration"),"class");
-//        m.put(n.f11.accept(this,"declaration"),"String");
+
 
         if(n.f14.present())
         {
-           n.f14.accept(this,STD.GetMainVariables());
+            n.f14.accept(this,STD.GetMainVariables());
         }
 
         return null;
@@ -88,10 +83,13 @@ public class STPopulatingVisitor extends GJDepthFirst<String,ScopeType>{
         type=n.f0.accept(this,null);
         id=n.f1.accept(this,null);
 
-
         if(!type.equals("int") && !type.equals("int[]") && !type.equals("boolean"))
         {
-            return null;
+            if(!STD.FindClass(type))
+            {
+                System.out.println("Error");
+                System.exit(0);
+            }
         }
 
 
@@ -100,10 +98,8 @@ public class STPopulatingVisitor extends GJDepthFirst<String,ScopeType>{
             System.out.println("Error");
             System.exit(0);
         }
-
         return null;
     }
-
     ///////////////////////////////////////////////////////////////////
 
 
@@ -167,11 +163,6 @@ public class STPopulatingVisitor extends GJDepthFirst<String,ScopeType>{
         String id;
         id=n.f1.accept(this,null);
 
-        if(!STD.InsertClass(id))
-        {
-            System.out.println("Error");
-            System.exit(0);
-        }
         ClassType ct;
         ct=STD.GetClass(id);
 
@@ -191,27 +182,32 @@ public class STPopulatingVisitor extends GJDepthFirst<String,ScopeType>{
         ct=(ClassType)st;
 
 
-
         type=n.f1.accept(this,null);
         id=n.f2.accept(this,null);
 
-        if(!type.equals("int") && !type.equals("int[]") && !type.equals("boolean"))
+        MethodType MT=new MethodType(id,type,ct);
+
+        if(!type.equals("int") && !type.equals("int[]")  && !type.equals("boolean"))
         {
-            return null;
+            if(!STD.FindClass(type))
+            {
+                System.out.println("Error");
+                System.exit(0);
+            }
         }
 
-        MethodType mt=new MethodType(id,type);
+        n.f4.accept(this,MT);
+        n.f7.accept(this,MT);
 
-        n.f4.accept(this,mt);
-        n.f7.accept(this,mt);
-
-        if(!ct.InsertMethod(mt))
+        if(!ct.InsertMethod(MT))
         {
             System.out.println("Error");
             System.exit(0);
         }
 
-        return null;
+
+
+        return "";
 
     }
 /////////////////////////////////////////////////////////////////
@@ -231,31 +227,13 @@ public class STPopulatingVisitor extends GJDepthFirst<String,ScopeType>{
     public String visit(ClassExtendsDeclaration n,ScopeType st)
     {
 
-        String id,base_id;
+        String id;
         id=n.f1.accept(this,null);
-        base_id=n.f3.accept(this,null);
 
-        if(!STD.InsertClass(id))
-        {
-            System.out.println("Error");
-            System.exit(0);
-        }
 
-        ClassType ct,base_ct;
+        ClassType ct;
 
         ct=STD.GetClass(id);
-
-
-        if(!STD.FindClass(base_id)){
-            System.out.println("Error");
-            System.exit(0);
-        }
-
-        base_ct=STD.GetClass(base_id);
-
-
-
-        ct.SetBaseClass(base_ct);
 
 
 
@@ -300,20 +278,21 @@ public class STPopulatingVisitor extends GJDepthFirst<String,ScopeType>{
         type=n.f0.accept(this,null);
         id=n.f1.accept(this,null);
 
-        if(!type.equals("int") && !type.equals("int[]") && !type.equals("boolean"))
-        {
-            mt.ChangeId(type+id);
-            return null;
-        }
 
-        mt.InsertVariable(id,type);
+        if(!mt.InsertVariable(id,type))
+        {
+            System.out.println("Error");
+            System.exit(0);
+        }
         mt.ChangeId(type);
+
         return null;
     }
 
     public String visit(FormalParameterTail n,ScopeType st)
     {
         MethodType mt=(MethodType)st;
+
 
         n.f0.accept(this,mt);
         return null;
@@ -327,6 +306,7 @@ public class STPopulatingVisitor extends GJDepthFirst<String,ScopeType>{
         return null;
     }
 
+
     ////////////////////////////////////////////////////////////////
 
 
@@ -339,7 +319,7 @@ public class STPopulatingVisitor extends GJDepthFirst<String,ScopeType>{
     public String visit(Identifier n, ScopeType st)
     {
 
-       return n.f0.tokenImage;
+        return n.f0.tokenImage;
 
 
     }
@@ -354,12 +334,4 @@ public class STPopulatingVisitor extends GJDepthFirst<String,ScopeType>{
 
 
 
-
-
-
-
-
 }
-
-
-

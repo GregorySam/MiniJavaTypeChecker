@@ -14,13 +14,13 @@ class Main {
 	    fis = new FileInputStream(args[0]);
 	    MiniJavaParser parser = new   MiniJavaParser(fis);
 
-	    STPopulatingVisitor STPV = new STPopulatingVisitor();
+	    STClassesVisitor STPV = new STClassesVisitor();
 	    Goal root = parser.Goal();
 
 		System.err.println("Program parsed successfully.");
 	    System.out.println(root.accept(STPV, null));
 
-		STPClassTypesVisitor STPCTV=new STPClassTypesVisitor(STPV.GetSTD());
+		STPVariablesDeclVisitor STPCTV=new STPVariablesDeclVisitor(STPV.GetSTD());
 		System.out.println(root.accept(STPCTV, null));
 
 		TypeCheckerVisitor TCV=new TypeCheckerVisitor(STPV.GetSTD());

@@ -9,10 +9,10 @@ import java.util.*;
 
 class ScopeType
 {
-    protected HashMap<String, Object> Variables;
+    protected HashMap<String, String> Variables;
 
 
-    public boolean InsertVariable(String id, Object p)
+    public boolean InsertVariable(String id, String p)
     {
         if(Variables.containsKey(id))
         {
@@ -31,7 +31,7 @@ class ScopeType
         Variables =new HashMap<>();
     }
 
-    public HashMap<String, Object> GetVariables()
+    public HashMap<String, String> GetVariables()
     {
         return Variables;
     }
@@ -44,17 +44,10 @@ class ScopeType
         }
         else
         {
-            Object o_type;
             String str_type;
 
-            o_type=Variables.get(id);
-            str_type=o_type.toString();
+            str_type=Variables.get(id);
 
-            if(!str_type.equals("int") && !str_type.equals("int[]") && !str_type.equals("boolean"))
-            {
-                ClassType ct=(ClassType)o_type;
-                return ct.GetName();
-            }
             return str_type;
         }
     }
@@ -68,19 +61,23 @@ class MethodType extends ScopeType
     private String name;
     private String id;
     private String type;
+    private List<String> ParametersTypes;
+    private ClassType ClassPertain;
 
-    public MethodType(String name,String type)
+    public MethodType(String name,String type,ClassType CT)
     {
         this.name=name;
         this.type=type;
         this.id=type+name;
-
+        this.ParametersTypes=new ArrayList<>();
+        this.ClassPertain=CT;
 
     }
 
     public void ChangeId(String a)
     {
         id=id+a;
+        ParametersTypes.add(a);
     }
 
     public String GetName()
@@ -98,6 +95,56 @@ class MethodType extends ScopeType
     {
         return id;
     }
+
+    public ClassType getClassPertain()
+    {
+        return ClassPertain;
+    }
+
+    public boolean CheckParametersMatch(String params,STDataStructure std){
+
+        if(params==null && ParametersTypes.size()==0)
+        {
+            return true;
+        }
+        String[] parts=params.split(",");
+        int i;
+
+        if(parts.length!=ParametersTypes.size()){
+            return false;
+        }
+
+        for(i=0;i<parts.length;i++)
+        {
+            if(!ParametersTypes.get(i).equals(parts[i]))
+            {
+                if(!parts[i].equals("int") && !parts[i].equals("boolean") && !parts[i].equals("int[]")){
+                    ClassType base_class_type,classType,original_baseclass;
+
+                    classType=std.GetClass(parts[i]);
+                    base_class_type=std.GetClass(ParametersTypes.get(i));
+                    original_baseclass=classType.GetBaseClass();
+
+                    if(original_baseclass==null)
+                    {
+                        return false;
+                    }
+
+                    return base_class_type.GetName().equals(original_baseclass.GetName());
+
+
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+
+    }
+
+
 
 }
 
@@ -163,14 +210,31 @@ class ClassType extends ScopeType
 
     public String GetName(){return name;}
 
+    public boolean FindMethod(String id)
+    {
+        return  Methods.get(id)!=null;
+    }
+
 
     public void SetBaseClass(ClassType id)
     {
         BaseClass=id;
     }
 
-    public MethodType GetMethod(String id)
-    {
+    public MethodType GetMethod(String id) {
+
+        if(Methods.get(id)==null)
+        {
+            if(BaseClass==null)
+            {
+                return null;
+            }
+            else
+            {
+                return BaseClass.GetMethod(id);
+            }
+        }
+
         return Methods.get(id);
     }
 
@@ -178,6 +242,8 @@ class ClassType extends ScopeType
     {
         return Methods;
     }
+
+    public ClassType GetBaseClass(){return  BaseClass;}
 
 
 
@@ -219,7 +285,9 @@ public class STDataStructure {
 
     public ClassType GetClass(String id)
     {
+
         return Classes.get(id);
+
     }
 
     public boolean FindClass(String id)

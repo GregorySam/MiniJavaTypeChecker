@@ -12,28 +12,18 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
             STD=newSTD;
         }
 
-        private void CheckType(String id, String type, ScopeType ST)
+        private void CheckTypes(String exp1, String type1, String exp2, String type2)
         {
-            String id_type;
-
-            if(!id.equals(type))
+            if(exp1==null || exp2==null || type1==null || type2==null)
             {
-                id_type=ST.GetType(id);
-
-                if(id_type==null)
-                {
-                    System.out.println("Error");
-                    System.exit(0);
-                }
-
-                if(!id_type.equals(type))
-                {
-                    System.out.println("Error");
-                    System.exit(0);
-                }
+                System.out.println("Error");
+                System.exit(0);
             }
 
-
+            if(!exp1.equals(type1) || !exp2.equals(type2)){
+                System.out.println("Error");
+                System.exit(0);
+            }
         }
 
 
@@ -89,6 +79,82 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
         return null;
 
     }
+
+    public String visit(ClassDeclaration n,ScopeType st)
+    {
+        String class_id;
+        ClassType ct;
+
+        class_id=n.f1.accept(this,null);
+        ct=STD.GetClass(class_id);
+        n.f4.accept(this,ct);
+        return null;
+
+    }
+
+    public String visit(ClassExtendsDeclaration n,ScopeType st)
+    {
+        ClassType ct=STD.GetClass(n.f1.accept(this,null));
+
+        n.f6.accept(this,ct);
+
+        return null;
+    }
+
+
+    public String visit(MethodDeclaration n,ScopeType st)
+    {
+        String expr_type,id,return_type;
+        MethodType mt;
+        ClassType ct;
+
+        ct=(ClassType)st;
+
+        return_type=n.f1.accept(this,st);
+
+        id=n.f2.accept(this,null);
+        mt=ct.GetMethod(id);
+
+        n.f8.accept(this,mt);
+
+
+
+        expr_type=n.f10.accept(this,mt);
+
+        if(!expr_type.equals(return_type))
+        {
+            if(!expr_type.equals("int") && !expr_type.equals("int[]") && !expr_type.equals("boolean") )
+            {
+
+                ClassType base_class;
+
+
+                base_class=STD.GetClass(expr_type).GetBaseClass();
+                if(base_class==null)
+                {
+                    System.out.println("Error");
+                    System.exit(0);
+                }
+                if(!return_type.equals(base_class.GetName()))
+                {
+                    System.out.println("Error");
+                    System.exit(0);
+                }
+
+            }
+            else
+            {
+                System.out.println("Error");
+                System.exit(0);
+            }
+        }
+
+
+        return null;
+
+
+    }
+
     //////////////////////////////////////////////////////////////////////////////
     /**Statement
      * Grammar production:
@@ -99,6 +165,44 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
      *       | WhileStatement()
      *       | PrintStatement()
      */
+
+    public String visit(IfStatement n,ScopeType st)
+    {
+        String bool_exp;
+
+        bool_exp=n.f2.accept(this,st);
+
+        if(!bool_exp.equals("boolean")){
+            System.out.println("Error");
+            System.exit(0);
+        }
+
+        n.f4.accept(this,st);
+        n.f6.accept(this,st);
+        return null;
+    }
+
+    public String visit(WhileStatement n,ScopeType st)
+    {
+        String bool_exp;
+
+        bool_exp=n.f2.accept(this,st);
+
+        if(!bool_exp.equals("boolean")){
+            System.out.println("Error");
+            System.exit(0);
+        }
+
+        n.f4.accept(this,st);
+        return null;
+
+    }
+
+    public String visit(PrintStatement n,ScopeType st)
+    {
+        n.f2.accept(this,st);
+        return null;
+    }
 
     public String visit(Block n,ScopeType st)
     {
@@ -121,19 +225,11 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
 
         id=n.f0.accept(this,null);
         id_type=st.GetType(id);
-        if(id_type==null)
-        {
-            System.out.println("Error");
-            System.exit(0);
-        }
+
 
         expr_type=n.f2.accept(this,st);
 
-        if(!id_type.equals(expr_type))
-        {
-            System.out.println("Error");
-            System.exit(0);
-        }
+        CheckTypes(id_type,expr_type,expr_type,id_type);
 
         return  null;
 
@@ -160,19 +256,16 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
 
     public String visit(AndExpression n,ScopeType st)
     {
-        String id1,id2;
+        String exp1,exp2;
 
 
-        id1=n.f0.accept(this,st);
-
-        CheckType(id1,"boolean",st);
+        exp1=n.f0.accept(this,st);
 
 
-        id2=n.f2.accept(this,st);
 
+        exp2=n.f2.accept(this,st);
 
-        CheckType(id2,"boolean",st);
-
+        CheckTypes(exp1,"boolean",exp2,"boolean");
 
 
         return "boolean";
@@ -180,67 +273,67 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
 
     public String visit(CompareExpression n,ScopeType st)
     {
-        String pe1,pe2;
+        String exp1,exp2;
 
 
-        pe1=n.f0.accept(this,st);
+        exp1=n.f0.accept(this,st);
 
-        CheckType(pe1,"int",st);
 
-        pe2=n.f2.accept(this,st);
 
-        CheckType(pe2,"int",st);
+        exp2=n.f2.accept(this,st);
+
+        CheckTypes(exp1,"int",exp2,"int");
 
         return "boolean";
     }
 
     public String visit(PlusExpression n,ScopeType st)
     {
-        String id1,id2;
+        String exp1,exp2;
 
 
-        id1=n.f0.accept(this,st);
-
-        CheckType(id1,"int",st);
+        exp1=n.f0.accept(this,st);
 
 
-        id2=n.f2.accept(this,st);
+        exp2=n.f2.accept(this,st);
 
-        CheckType(id2,"int",st);
+
+        CheckTypes(exp1,"int",exp2,"int");
+
 
         return "int";
     }
 
     public String visit(MinusExpression n,ScopeType st)
     {
-        String id1,id2;
+        String exp1,exp2;
 
 
-        id1=n.f0.accept(this,st);
-
-        CheckType(id1,"int",st);
+        exp1=n.f0.accept(this,st);
 
 
-        id2=n.f2.accept(this,st);
+        exp2=n.f2.accept(this,st);
 
-        CheckType(id2,"int",st);
+
+        CheckTypes(exp1,"int",exp2,"int");
+
 
         return "int";
     }
 
     public String visit(TimesExpression n,ScopeType st)
     {
-        String id1,id2;
+        String exp1,exp2;
 
 
-        id1=n.f0.accept(this,st);
-
-        CheckType(id1,"int",st);
+        exp1=n.f0.accept(this,st);
 
 
-        id2=n.f2.accept(this,st);
+        exp2=n.f2.accept(this,st);
 
-        CheckType(id2,"int",st);
+
+        CheckTypes(exp1,"int",exp2,"int");
+
 
         return "int";
     }
@@ -251,11 +344,12 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
 
         exp_intarrray=n.f0.accept(this,st);
 
-        CheckType(exp_intarrray,"int[]",st);
 
         exp_int=n.f2.accept(this,st);
 
-        CheckType(exp_int,"int",st);
+
+        CheckTypes(exp_intarrray,"int[]",exp_int,"int");
+
 
         return "int";
     }
@@ -266,11 +360,217 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
 
         exp=n.f0.accept(this,st);
 
-        CheckType(exp,"int[]",st);
+        if(!exp.equals("int[]")){
+            System.out.println("Error");
+            System.exit(0);
+        }
 
         return "int";
 
     }
+
+    /**ArrayAssignementStatement
+     * Grammar production:
+     * f0 -> Identifier()
+     * f1 -> "["
+     * f2 -> Expression()
+     * f3 -> "]"
+     * f4 -> "="
+     * f5 -> Expression()
+     * f6 -> ";"
+     */
+
+    public String visit(ArrayAssignmentStatement n,ScopeType st)
+    {
+        String id,expr1,expr2,id_type;
+        id=n.f0.accept(this,st);
+
+        id_type=st.GetType(id);
+
+        expr1=n.f2.accept(this,st);
+
+        CheckTypes(id_type,"int[]",expr1,"int");
+
+        expr2=n.f5.accept(this,st);
+
+        if(!expr2.equals("int"))
+        {
+            System.out.println("Error");
+            System.exit(0);
+        }
+
+
+
+        return "";
+    }
+
+    /**BracketExpression
+     * Grammar production:
+     * f0 -> "("
+     * f1 -> Expression()
+     * f2 -> ")"
+     */
+
+    public String visit(BracketExpression n,ScopeType st)
+    {
+        return n.f1.accept(this,st);
+    }
+
+    /**MessageSend
+     * Grammar production:
+     * f0 -> PrimaryExpression()
+     * f1 -> "."
+     * f2 -> Identifier()
+     * f3 -> "("
+     * f4 -> ( ExpressionList() )?
+     * f5 -> ")"
+     */
+
+
+
+    public String visit(MessageSend n,ScopeType st)
+    {
+        String pe,id,parameters;
+        ClassType ct;
+        MethodType mt=null;
+
+        pe=n.f0.accept(this,st);
+
+        id=n.f2.accept(this,st);
+
+
+
+        if(pe.equals("int") || pe.equals("int[]") || pe.equals("boolean"))
+        {
+            System.out.println("Error");
+            System.exit(0);
+        }
+
+        if(pe.equals("this"))
+        {
+
+            if(st==STD.GetMainVariables())
+            {
+                System.out.println("Error");
+                System.exit(0);
+            }
+            else
+            {
+                mt=(MethodType)st;
+                ct=mt.getClassPertain();
+                if(!ct.FindMethod(id))
+                {
+                    System.out.println("Error");
+                    System.exit(0);
+                }
+            }
+
+        }
+        else
+        {
+
+            ct=STD.GetClass(pe);
+            if(ct==null )
+            {
+                System.out.println("Error");
+                System.exit(0);
+            }
+            mt=ct.GetMethod(id);
+            if(mt==null)
+            {
+                System.out.println("Error");
+                System.exit(0);
+            }
+        }
+
+        parameters=n.f4.accept(this,st);
+
+
+        //mt.Checkparametersmatch
+        if(!mt.CheckParametersMatch(parameters,STD))
+        {
+            System.out.println("Error");
+            System.exit(0);
+        }
+
+        return mt.GetType();
+
+    }
+
+    /**This
+     * Grammar production:
+     * f0 -> "this"
+     */
+
+
+    public String visit(ThisExpression n,ScopeType st)
+    {
+        return n.f0.tokenImage;
+    }
+
+    /**ExpressionList
+     * Grammar production:
+     * f0 -> Expression()
+     * f1 -> ExpressionTail()
+     */
+
+    public String visit(ExpressionList n,ScopeType st)
+    {
+
+        String type,typel;
+
+        type=n.f0.accept(this,st);
+
+
+        typel=n.f1.accept(this,st);
+
+        return (type+typel);
+    }
+
+    /**
+     * Grammar production:
+     * f0 -> ( ExpressionTerm() )*
+     */
+
+    public String visit(ExpressionTail n,ScopeType st)
+    {
+        String expr_t="";
+        int s,i;
+        s=n.f0.size();
+
+        for(i=0;i<s;i++)
+        {
+            expr_t=expr_t+","+n.f0.elementAt(i).accept(this,st);
+        }
+
+
+        return expr_t;
+    }
+    /**ExpressionTerm
+     * Grammar production:
+     * f0 -> ","
+     * f1 -> Expression()
+     */
+
+    public String visit(ExpressionTerm n,ScopeType st)
+    {
+        String expr;
+        expr=n.f1.accept(this,st);
+        if(expr==null)
+        {
+            return "";
+        }
+
+
+        return expr;
+
+
+
+    }
+
+
+
+
 
 
     public String visit(Clause n,ScopeType st)
@@ -287,7 +587,21 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
 
     public String visit(PrimaryExpression n,ScopeType st)
     {
-        return n.f0.accept(this,st);
+        String pex,type;
+        pex=n.f0.accept(this,st);
+
+
+        if(pex.equals("int") || pex.equals("boolean") || pex.equals("int[]"))
+        {
+            return pex;
+        }
+        type=st.GetType(pex);
+        if(type==null)
+        {
+            System.out.println("Error");
+            System.exit(0);
+        }
+        return type;
     }
 
     public String visit(Identifier n,ScopeType st) { return n.f0.tokenImage;}

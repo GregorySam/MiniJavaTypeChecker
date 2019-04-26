@@ -77,22 +77,8 @@ class MethodType extends ScopeType
     {
         if(Variables.get(id)==null)
         {
-            String type;
-            ClassType current_base_class;
-            current_base_class=ClassPertain;
 
-            while(current_base_class!=null)
-            {
-                type=current_base_class.GetType(id);
-                if(type!=null) {
-                    return type;
-                }
-                else {
-                    current_base_class=current_base_class.GetBaseClass();
-                }
-            }
-
-            return null;
+            return ClassPertain.GetType(id);
 
         }
         else
@@ -180,8 +166,6 @@ class MethodType extends ScopeType
 
     }
 
-
-
 }
 
 class ClassType extends ScopeType
@@ -197,7 +181,10 @@ class ClassType extends ScopeType
         Methods=new HashMap<>();
         BaseClass=null;
     }
-    //public boolean IsTypeOf()
+    public boolean IsTypeOf(String id)
+    {
+
+    }
 
     public boolean InsertMethod(MethodType MT)
     {
@@ -206,24 +193,28 @@ class ClassType extends ScopeType
             return false;
         }
 
-        ClassType current_base;
-        current_base=BaseClass;
-        String class_funid=MT.GetId();
 
-        while(current_base!=null)
+        if(BaseClass==null)
         {
-            MethodType base_class_meth;
+            Methods.put(MT.GetName(),MT);
+            return true;
+        }
 
-            base_class_meth=current_base.GetMethod(MT.GetName());
+        MethodType base_class_meth;
 
-            if(base_class_meth==null)
-            {
-                current_base=current_base.GetBaseClass();
-                continue;
-            }
+        base_class_meth=BaseClass.GetMethod(MT.GetName());
 
-            String base_funid=base_class_meth.GetId();
-            if(base_funid.equals(class_funid))
+        if(base_class_meth==null) {
+            Methods.put(MT.GetName(),MT);
+            return true;
+        }
+        else {
+
+            String base_funid;
+            base_funid=MT.GetId();
+
+            String base_class_funid=base_class_meth.GetId();
+            if(base_funid.equals(base_class_funid))
             {
                 Methods.put(MT.GetName(),MT);
                 return true;
@@ -233,8 +224,6 @@ class ClassType extends ScopeType
                 return false;
             }
         }
-        Methods.put(MT.GetName(),MT);
-        return true;
     }
 
     public String GetName(){return name;}
@@ -265,6 +254,23 @@ class ClassType extends ScopeType
         }
 
         return Methods.get(id);
+    }
+    @Override
+    public String GetType(String id)
+    {
+        if(Variables.get(id)==null)
+        {
+            if(BaseClass==null)
+            {
+                return null;
+            }
+            else
+            {
+                return BaseClass.GetType(id);
+            }
+        }
+
+        return Variables.get(id);
     }
 
     public HashMap<String, MethodType> GetMethods()

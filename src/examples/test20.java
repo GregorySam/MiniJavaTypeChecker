@@ -42,9 +42,6 @@ class B23 extends A23 {
         return i1;
     }
 
-    public int setI1(int i) {
-        return i + 111;
-    }
 }
 
 class C23 extends B23 {
@@ -56,10 +53,10 @@ class C23 extends B23 {
     public int getI1() {
         A23 a;
         i3=1;
+        i3=this.setI1(i3);
+
         return i3;
     }
 
-    public int setI1(int i) {
-        return i*2;
-    }
+
 }

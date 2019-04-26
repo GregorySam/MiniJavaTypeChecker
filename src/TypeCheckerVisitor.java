@@ -689,22 +689,30 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
 
         pex=n.f0.accept(this,st);
 
-        if(pex.equals("int") || pex.equals("boolean") || pex.equals("int[]") || pex.equals("this") )
+
+        if(pex.equals("int") || pex.equals("boolean") || pex.equals("int[]") )
         {
             return pex;
         }
+        if(pex.equals("this"))
+        {
+            MethodType mt;
+
+            mt=(MethodType)st;
+            return mt.getClassPertain().GetName();
+        }
+        if(STD.FindClass(pex))
+        {
+            return pex;
+        }
+
         type=st.GetType(pex);
         if(type==null)
         {
-            if(STD.FindClass(pex))
-            {
-                return pex;
-            }
-            else
-            {
-                System.out.println("Error");
-                System.exit(0);
-            }
+
+            System.out.println("Error");
+            System.exit(0);
+
         }
 
 

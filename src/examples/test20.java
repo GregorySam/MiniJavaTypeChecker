@@ -51,14 +51,12 @@ class C23 extends B23 {
     int i1;
     int i5;
 
-    public int init(A23 a) {
-        i5 = 333;
-        i1 = this.setI1(i5);
-        return a.init(this);
-    }
+
 
     public int getI1() {
-        return i1;
+        A23 a;
+        i3=1;
+        return i3;
     }
 
     public int setI1(int i) {

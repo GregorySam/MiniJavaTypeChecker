@@ -78,17 +78,22 @@ class MethodType extends ScopeType
         if(Variables.get(id)==null)
         {
             String type;
-            type=ClassPertain.GetType(id);
-            if(type==null)
+            ClassType current_base_class;
+            current_base_class=ClassPertain;
+
+            while(current_base_class!=null)
             {
-                ClassType base;
-                base=ClassPertain.GetBaseClass();
-
-                type=base.GetType(id);
-
+                type=current_base_class.GetType(id);
+                if(type!=null) {
+                    return type;
+                }
+                else {
+                    current_base_class=current_base_class.GetBaseClass();
+                }
             }
 
-            return type;
+            return null;
+
         }
         else
         {
@@ -192,52 +197,44 @@ class ClassType extends ScopeType
         Methods=new HashMap<>();
         BaseClass=null;
     }
-
+    //public boolean IsTypeOf()
 
     public boolean InsertMethod(MethodType MT)
     {
 
-
         if(Methods.containsKey(MT.GetName())) {
             return false;
-
         }
 
+        ClassType current_base;
+        current_base=BaseClass;
+        String class_funid=MT.GetId();
 
-        if(BaseClass==null)
+        while(current_base!=null)
         {
+            MethodType base_class_meth;
 
+            base_class_meth=current_base.GetMethod(MT.GetName());
 
-            Methods.put(MT.GetName(),MT);
-            return true;
+            if(base_class_meth==null)
+            {
+                current_base=current_base.GetBaseClass();
+                continue;
+            }
 
-
-        }
-        else
-        {
-
-            if(!BaseClass.GetMethods().containsKey(MT.GetName()))
+            String base_funid=base_class_meth.GetId();
+            if(base_funid.equals(class_funid))
             {
                 Methods.put(MT.GetName(),MT);
                 return true;
             }
             else
             {
-                String base_funid=BaseClass.GetMethod(MT.GetName()).GetId();
-                String class_funid=MT.GetId();
-                if(base_funid.equals(class_funid))
-                {
-                    Methods.put(MT.GetName(),MT);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return false;
             }
-
-
         }
+        Methods.put(MT.GetName(),MT);
+        return true;
     }
 
     public String GetName(){return name;}

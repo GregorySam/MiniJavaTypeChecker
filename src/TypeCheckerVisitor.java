@@ -445,7 +445,6 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
         }
 
 
-
         return "";
     }
 
@@ -503,27 +502,11 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
             {
                 mt=(MethodType)st;
                 ct=mt.getClassPertain();
-                ClassType base;
-
-                if(!ct.FindMethod(id))
+                if(!ct.FindMethod(mt.GetName()))
                 {
-
-                    base=ct.GetBaseClass();
-                    if(base==null)
-                    {
-                        System.out.println("Error");
-                        System.exit(0);
-                    }
-
-                    if(!base.FindMethod(id))
-                    {
-                        System.out.println("Error");
-                        System.exit(0);
-                    }
-                    mt=base.GetMethod(id);
-
+                    System.out.println("Error");
+                    System.exit(0);
                 }
-
             }
 
         }
@@ -603,6 +586,7 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
         {
             expr_t=expr_t+","+n.f0.elementAt(i).accept(this,st);
         }
+
 
 
         return expr_t;

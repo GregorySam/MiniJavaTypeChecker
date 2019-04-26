@@ -87,15 +87,16 @@ public class STPVariablesDeclVisitor extends GJDepthFirst<String,ScopeType> {
         {
             if(!STD.FindClass(type))
             {
-                System.out.println("Error");
+                System.out.println("Unkown type: "+type+" in "+ST.GetScopeName());
                 System.exit(0);
+
             }
         }
 
 
         if(!ST.InsertVariable(id,type))
         {
-            System.out.println("Error");
+            System.out.println("Identifier "+id+" already declared in "+ST.GetScopeName());
             System.exit(0);
         }
         return null;
@@ -191,7 +192,7 @@ public class STPVariablesDeclVisitor extends GJDepthFirst<String,ScopeType> {
         {
             if(!STD.FindClass(type))
             {
-                System.out.println("Error");
+                System.out.println("Undefined type");
                 System.exit(0);
             }
         }

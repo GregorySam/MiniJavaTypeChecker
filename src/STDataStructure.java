@@ -10,6 +10,7 @@ import java.util.*;
 class ScopeType
 {
     protected HashMap<String, String> Variables;
+    private String scopename;
 
 
     public boolean InsertVariable(String id, String p)
@@ -25,9 +26,14 @@ class ScopeType
         }
     }
 
+    public String GetScopeName(){
+        return scopename;
+    }
 
-    public ScopeType()
+
+    public ScopeType(String name)
     {
+        this.scopename=name;
         Variables =new HashMap<>();
     }
 
@@ -57,6 +63,7 @@ class MethodType extends ScopeType
 
     public MethodType(String name,String type,ClassType CT)
     {
+        super("class "+CT.GetName()+" "+name);
         this.name=name;
         this.type=type;
         this.id=type+name;
@@ -180,6 +187,7 @@ class ClassType extends ScopeType
 
     public ClassType(String n)
     {
+        super("class "+n);
         name=n;
         Methods=new HashMap<>();
         BaseClass=null;
@@ -280,7 +288,7 @@ public class STDataStructure {
     private HashMap<String,ClassType> Classes;
 
     public STDataStructure(){
-        MainVariables=new ScopeType();
+        MainVariables=new ScopeType("Main");
 
         Classes=new HashMap<>();
     }

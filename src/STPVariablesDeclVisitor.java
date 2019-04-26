@@ -196,6 +196,7 @@ public class STPVariablesDeclVisitor extends GJDepthFirst<String,ScopeType> {
             }
         }
 
+
         n.f4.accept(this,MT);
         n.f7.accept(this,MT);
 

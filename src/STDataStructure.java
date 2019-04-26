@@ -31,25 +31,16 @@ class ScopeType
         Variables =new HashMap<>();
     }
 
-    public HashMap<String, String> GetVariables()
+    public HashMap<String,String> GetVariables()
     {
         return Variables;
     }
 
+
+
     public String GetType(String id)
     {
-        if(Variables.get(id)==null)
-        {
-            return null;
-        }
-        else
-        {
-            String str_type;
-
-            str_type=Variables.get(id);
-
-            return str_type;
-        }
+       return Variables.get(id);
     }
 
 
@@ -73,6 +64,35 @@ class MethodType extends ScopeType
         this.ClassPertain=CT;
 
     }
+
+    @Override
+    public String GetType(String id)
+    {
+        if(Variables.get(id)==null)
+        {
+            String type;
+            type=ClassPertain.GetType(id);
+            if(type==null)
+            {
+                ClassType base;
+                base=ClassPertain.GetBaseClass();
+
+                type=base.GetType(id);
+
+            }
+
+            return type;
+        }
+        else
+        {
+            String str_type;
+
+            str_type=Variables.get(id);
+
+            return str_type;
+        }
+    }
+
 
     public void ChangeId(String a)
     {
@@ -106,6 +126,10 @@ class MethodType extends ScopeType
         if(params==null && ParametersTypes.size()==0)
         {
             return true;
+        }
+        else if(params==null )
+        {
+            return false;
         }
         String[] parts=params.split(",");
         int i;

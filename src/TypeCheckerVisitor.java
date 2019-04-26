@@ -20,9 +20,35 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
                 System.exit(0);
             }
 
+
             if(!exp1.equals(type1) || !exp2.equals(type2)){
-                System.out.println("Error");
-                System.exit(0);
+
+                if(type1.equals("int") || type1.equals("int[]") || type1.equals("boolean"))
+                {
+                    System.out.println("Error");
+                    System.exit(0);
+                }
+                ClassType orginal_base_class,class_t;
+
+
+                class_t=STD.GetClass(exp2);
+                orginal_base_class=class_t.GetBaseClass();
+
+                if(orginal_base_class==null)
+                {
+                    System.out.println("Error");
+                    System.exit(0);
+                }
+
+
+                if(!orginal_base_class.GetName().equals(exp1))
+                {
+                    System.out.println("Error");
+                    System.exit(0);
+                }
+
+
+
             }
         }
 
@@ -154,6 +180,25 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
 
 
     }
+
+    public String visit(IntegerType n, ScopeType st)
+    {
+
+        return n.f0.tokenImage;
+    }
+
+    public String visit(BooleanType n, ScopeType st)
+    {
+
+        return n.f0.tokenImage;
+    }
+
+    public String visit(ArrayType n, ScopeType st)
+    {
+        return (n.f0.tokenImage+n.f1.tokenImage+n.f2.tokenImage);
+    }
+
+
 
     //////////////////////////////////////////////////////////////////////////////
     /**Statement
@@ -458,11 +503,27 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
             {
                 mt=(MethodType)st;
                 ct=mt.getClassPertain();
+                ClassType base;
+
                 if(!ct.FindMethod(id))
                 {
-                    System.out.println("Error");
-                    System.exit(0);
+
+                    base=ct.GetBaseClass();
+                    if(base==null)
+                    {
+                        System.out.println("Error");
+                        System.exit(0);
+                    }
+
+                    if(!base.FindMethod(id))
+                    {
+                        System.out.println("Error");
+                        System.exit(0);
+                    }
+                    mt=base.GetMethod(id);
+
                 }
+
             }
 
         }
@@ -486,7 +547,7 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
         parameters=n.f4.accept(this,st);
 
 
-        //mt.Checkparametersmatch
+
         if(!mt.CheckParametersMatch(parameters,STD))
         {
             System.out.println("Error");
@@ -568,6 +629,41 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
 
     }
 
+    public String visit(ArrayAllocationExpression n,ScopeType st)
+    {
+        String expr;
+
+        expr=n.f3.accept(this,st);
+
+        if(!expr.equals("int"))
+        {
+            System.out.println("Error");
+            System.exit(0);
+        }
+
+        return "int[]";
+
+
+    }
+
+    public String visit(AllocationExpression n,ScopeType st)
+    {
+        String id;
+        ClassType ct;
+
+        id=n.f1.accept(this,st);
+
+        if(!STD.FindClass(id))
+        {
+            System.out.println("Error");
+            System.exit(0);
+        }
+
+        return id;
+
+
+    }
+
 
 
 
@@ -588,19 +684,30 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
     public String visit(PrimaryExpression n,ScopeType st)
     {
         String pex,type;
+
+
+
         pex=n.f0.accept(this,st);
 
-
-        if(pex.equals("int") || pex.equals("boolean") || pex.equals("int[]"))
+        if(pex.equals("int") || pex.equals("boolean") || pex.equals("int[]") || pex.equals("this") )
         {
             return pex;
         }
         type=st.GetType(pex);
         if(type==null)
         {
-            System.out.println("Error");
-            System.exit(0);
+            if(STD.FindClass(pex))
+            {
+                return pex;
+            }
+            else
+            {
+                System.out.println("Error");
+                System.exit(0);
+            }
         }
+
+
         return type;
     }
 

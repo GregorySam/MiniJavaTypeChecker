@@ -5,14 +5,22 @@ class Main
 {
   public static void main(String[] args) {
 
-    A a;
+    A b;
+
+    boolean k;
+    int l;
 
 
 
-    int k;
     int[] A;
 
-    a=a.bla();
+   l=A[2];
+   k=b.Get(2+3,l,k);
+
+
+
+
+
 
 
 
@@ -23,13 +31,14 @@ class Main
 
 class A{
 
-    int j;
+    int l;
+    boolean b2;
 
-    public A bla()
-    {
-        A b;
+    public boolean Get(int k,int l,boolean b1){
+        boolean b2;
 
-        return b;
+
+        return b2;
     }
 
 
@@ -42,6 +51,8 @@ class B extends A
     public A bla()
     {
         A b;
+        int i;
+
 
         return b;
     }

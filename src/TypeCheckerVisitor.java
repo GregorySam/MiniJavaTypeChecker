@@ -234,7 +234,14 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
 
     public String visit(PrintStatement n,ScopeType st)
     {
-        n.f2.accept(this,st);
+        String stm;
+
+        stm=n.f2.accept(this,st);
+        if(!stm.equals("int") &&  !stm.equals("boolean"))
+        {
+            System.out.println("Expected boolean or int statement in print "+st.GetScopeName());
+            STD.SetErrorFlag(true);
+        }
         return null;
     }
 

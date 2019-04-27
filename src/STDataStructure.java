@@ -249,7 +249,11 @@ class ClassType extends ScopeType
 
             var_offset=var_offset+GetSize(type);
 
+
         }
+        this.var_offset=var_offset;
+
+
         System.out.println("----------------Methods----------------");
 
         for (Map.Entry<String, MethodType> entry : Methods.entrySet()) {
@@ -271,6 +275,7 @@ class ClassType extends ScopeType
             }
 
         }
+        this.methods_offset=meth_offset;
 
     }
 

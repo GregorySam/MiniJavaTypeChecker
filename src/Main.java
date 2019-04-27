@@ -24,7 +24,7 @@ class Main {
 			if(STCV.GetSTD().getErrorFlag())
 			{
 
-				System.out.println("////////////////////////////////////////////");
+				System.out.println("////////////////////////////////////////////"+"\n");
 				continue;
 			}
 
@@ -33,7 +33,7 @@ class Main {
 			res=root.accept(STPCTV, null);
 			if(STPCTV.GetSTD().getErrorFlag())
 			{
-				System.out.println("////////////////////////////////////////////");
+				System.out.println("////////////////////////////////////////////"+"\n");
 				continue;
 			}
 
@@ -41,7 +41,17 @@ class Main {
 			TypeCheckerVisitor TCV=new TypeCheckerVisitor(STCV.GetSTD());
 			root.accept(TCV, null);
 
-			System.out.println("////////////////////////////////////////////");
+			if(TCV.GetSTD().getErrorFlag())
+			{
+				System.out.println("////////////////////////////////////////////"+"\n");
+				continue;
+			}
+			else{
+				System.err.println("Program evaluated successfully.");
+				TCV.GetSTD().PrintOffsets();
+			}
+
+			System.out.println("////////////////////////////////////////////"+"\n");
 		}
 
 

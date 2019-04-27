@@ -6,6 +6,11 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
 
         private STDataStructure STD;
 
+        public STDataStructure GetSTD()
+    {
+        return STD;
+    }
+
 
         public TypeCheckerVisitor(STDataStructure newSTD)
         {
@@ -147,6 +152,7 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
                 if(!class_t.IsTypeOf(return_type))
                 {
                     System.out.println("Return type differs from declared type "+mt.GetScopeName());
+                    STD.SetErrorFlag(true);
                 }
 
 
@@ -154,6 +160,7 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
             else
             {
                 System.out.println("Return type differs from declared type "+mt.GetScopeName());
+                STD.SetErrorFlag(true);
             }
         }
 
@@ -201,6 +208,7 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
 
         if(!bool_exp.equals("boolean")){
             System.out.println("Expected boolean statement in if "+st.GetScopeName());
+            STD.SetErrorFlag(true);
         }
 
         n.f4.accept(this,st);
@@ -216,6 +224,7 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
 
         if(!bool_exp.equals("boolean")){
             System.out.println("Expected boolean statement in while "+st.GetScopeName());
+            STD.SetErrorFlag(true);
         }
 
         n.f4.accept(this,st);
@@ -257,6 +266,7 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
         if(!CheckTypes(id_type,expr_type,expr_type,id_type))
         {
             System.out.println("Differnet types in assignment in "+st.GetScopeName());
+            STD.SetErrorFlag(true);
         }
 
         return  null;
@@ -295,6 +305,7 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
 
         if(!CheckTypes(exp1,"boolean",exp2,"boolean")){
             System.out.println("Expected boolean types in && at "+st.GetScopeName());
+            STD.SetErrorFlag(true);
         }
 
 
@@ -314,6 +325,7 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
 
         if(!CheckTypes(exp1,"int",exp2,"int")){
             System.out.println("Expected int < int at "+st.GetScopeName());
+            STD.SetErrorFlag(true);
         }
 
 
@@ -333,6 +345,7 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
 
         if(!CheckTypes(exp1,"int",exp2,"int")){
             System.out.println("Expected int + int  at "+st.GetScopeName());
+            STD.SetErrorFlag(true);
         }
 
 
@@ -352,6 +365,7 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
 
         if(!CheckTypes(exp1,"int",exp2,"int")){
             System.out.println("Expected int - int at "+st.GetScopeName());
+            STD.SetErrorFlag(true);
         }
 
 
@@ -371,6 +385,7 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
 
         if(!CheckTypes(exp1,"int",exp2,"int")){
             System.out.println("Expected int * int at "+st.GetScopeName());
+            STD.SetErrorFlag(true);
         }
 
 
@@ -390,6 +405,7 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
         if(!CheckTypes(exp_intarrray,"int[]",exp_int,"int"))
         {
             System.out.println("Expected int[int] in array look up at "+st.GetScopeName());
+            STD.SetErrorFlag(true);
         }
 
 
@@ -404,6 +420,7 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
 
         if(!exp.equals("int[]")){
             System.out.println("Expected int[] in array length "+st.GetScopeName());
+            STD.SetErrorFlag(true);
         }
 
         return "int";
@@ -432,6 +449,7 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
 
         if(!CheckTypes(id_type,"int[]",expr1,"int")){
             System.out.println("Expected int[int] in array assignment at "+st.GetScopeName());
+            STD.SetErrorFlag(true);
         }
 
         expr2=n.f5.accept(this,st);
@@ -439,6 +457,7 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
         if(!expr2.equals("int"))
         {
             System.out.println("Expected int[int]=int in array assignment at "+st.GetScopeName());
+            STD.SetErrorFlag(true);
         }
 
 
@@ -481,9 +500,15 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
 
 
 
+
+        if(pe==null)
+        {
+            return null;
+        }
         if(pe.equals("int") || pe.equals("int[]") || pe.equals("boolean"))
         {
             System.out.println("Expected class object at "+st.GetScopeName());
+            STD.SetErrorFlag(true);
             return null;
         }
 
@@ -493,6 +518,7 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
             if(st==STD.GetMainVariables())
             {
                 System.out.println("Cant use this at "+st.GetScopeName());
+                STD.SetErrorFlag(true);
                 return null;
             }
             else
@@ -502,6 +528,7 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
                 if(!ct.FindMethod(mt.GetName()))
                 {
                     System.out.println("Undeclared Method at "+st.GetScopeName());
+                    STD.SetErrorFlag(true);
                 }
             }
 
@@ -513,12 +540,14 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
             if(ct==null )
             {
                 System.out.println("Undeclared identifier "+pe+" at "+st.GetScopeName());
+                STD.SetErrorFlag(true);
                 return null;
             }
             mt=ct.GetMethod(id);
             if(mt==null)
             {
                 System.out.println("Undeclared Method of "+pe+" at "+st.GetScopeName());
+                STD.SetErrorFlag(true);
                 return null;
             }
         }
@@ -528,6 +557,7 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
         if(!mt.CheckParametersMatch(parameters,STD))
         {
             System.out.println("Different parameters call at Method of "+pe+" at "+st.GetScopeName());
+            STD.SetErrorFlag(true);
         }
 
         return mt.GetType();
@@ -615,6 +645,7 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
         if(!expr.equals("int"))
         {
             System.out.println("Expected int as array allocation expr at "+st.GetScopeName());
+            STD.SetErrorFlag(true);
         }
 
         return "int[]";
@@ -632,6 +663,7 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
         if(!STD.FindClass(id))
         {
             System.out.println("Undeclared class id at allocation expr at "+st.GetScopeName());
+            STD.SetErrorFlag(true);
         }
 
         return id;
@@ -665,6 +697,7 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
         pex=n.f0.accept(this,st);
 
 
+
         if(pex.equals("int") || pex.equals("boolean") || pex.equals("int[]") )
         {
             return pex;
@@ -686,7 +719,8 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
         if(type==null)
         {
 
-            System.out.println("Undeclared identifier "+pex);
+            System.out.println("Undeclared identifier "+pex+" at "+st.GetScopeName());
+            STD.SetErrorFlag(true);
 
         }
 

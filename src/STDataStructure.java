@@ -9,7 +9,7 @@ import java.util.*;
 
 class ScopeType
 {
-    protected HashMap<String, String> Variables;
+    protected LinkedHashMap<String, String> Variables;
     private String scopename;
 
 
@@ -34,10 +34,10 @@ class ScopeType
     public ScopeType(String name)
     {
         this.scopename=name;
-        Variables =new HashMap<>();
+        Variables =new LinkedHashMap<>();
     }
 
-    public HashMap<String,String> GetVariables()
+    public LinkedHashMap<String,String> GetVariables()
     {
         return Variables;
     }
@@ -146,10 +146,7 @@ class MethodType extends ScopeType
                     classType=std.GetClass(parts[i]);
                     expected_base_class_type=std.GetClass(ParametersTypes.get(i));
 
-                    if(classType.IsTypeOf(expected_base_class_type.GetName()))
-                    {
-                        return true;
-                    }
+                    return classType.IsTypeOf(expected_base_class_type.GetName());
 
 
                 }
@@ -169,13 +166,16 @@ class ClassType extends ScopeType
 {
     private String name;
     private ClassType BaseClass;
-    private HashMap<String, MethodType> Methods;
+    private LinkedHashMap<String, MethodType> Methods;
+
+    private int var_offset;
+    private int methods_offset;
 
     public ClassType(String n)
     {
         super("class "+n);
         name=n;
-        Methods=new HashMap<>();
+        Methods=new LinkedHashMap<>();
         BaseClass=null;
     }
     public boolean IsTypeOf(String id)
@@ -190,6 +190,87 @@ class ClassType extends ScopeType
             return false;
         }
         return BaseClass.IsTypeOf(id);
+
+    }
+
+    static private int GetSize(String type)
+    {
+        if(type.equals("int"))
+        {
+           return 4;
+        }
+        else if(type.equals("int[]"))
+        {
+            return 8;
+        }
+        else if(type.equals("boolean")){
+            return 1;
+        }
+        else
+        {
+            return 8;
+        }
+    }
+
+    public int GetVariablesOffset()
+    {
+        return var_offset;
+    }
+
+    public int GetMethodsOffset()
+    {
+        return methods_offset;
+    }
+
+
+
+    public void PrintOffsets()
+    {
+        int var_offset,meth_offset;
+
+        if(BaseClass==null)
+        {
+            var_offset=0;
+            meth_offset=0;
+        }
+        else
+        {
+            var_offset=BaseClass.GetVariablesOffset();
+            meth_offset=BaseClass.GetMethodsOffset();
+        }
+        System.out.println("----------------Variables----------------");
+
+        for (Map.Entry<String, String> entry : Variables.entrySet()) {
+
+            String id=entry.getKey();
+            String type = entry.getValue();
+
+            System.out.println(name+"."+id+": "+var_offset);
+
+            var_offset=var_offset+GetSize(type);
+
+        }
+        System.out.println("----------------Methods----------------");
+
+        for (Map.Entry<String, MethodType> entry : Methods.entrySet()) {
+
+            String id=entry.getKey();
+
+            if(BaseClass==null)
+            {
+                System.out.println(name+"."+id+": "+meth_offset);
+                meth_offset=meth_offset+8;
+            }
+            else{
+                if(BaseClass.GetMethod(id)!=null) {
+                }
+                else{
+                    System.out.println(name+"."+id+": "+meth_offset);
+                    meth_offset=meth_offset+8;
+                }
+            }
+
+        }
 
     }
 
@@ -280,7 +361,7 @@ class ClassType extends ScopeType
         return Variables.get(id);
     }
 
-    public HashMap<String, MethodType> GetMethods()
+    public LinkedHashMap<String, MethodType> GetMethods()
     {
         return Methods;
     }
@@ -295,17 +376,31 @@ class ClassType extends ScopeType
 public class STDataStructure {
 
     private ScopeType MainVariables;
-    private HashMap<String,ClassType> Classes;
+    private LinkedHashMap<String,ClassType> Classes;
     boolean error_flag;
+
 
     public STDataStructure(){
         MainVariables=new ScopeType("Main");
         error_flag=false;
-        Classes=new HashMap<>();
+        Classes=new LinkedHashMap<String,ClassType>();
     }
 
     public boolean getErrorFlag(){
         return error_flag;
+    }
+
+    public void PrintOffsets()
+    {
+        for (Map.Entry<String, ClassType> entry :Classes.entrySet()) {
+
+            ClassType type = entry.getValue();
+            String class_name=entry.getKey();
+
+            System.out.println("--------------------------Class "+class_name+"--------------------------");
+            type.PrintOffsets();
+        }
+
     }
 
 

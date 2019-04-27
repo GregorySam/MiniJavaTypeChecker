@@ -5,26 +5,45 @@ import java.io.*;
 
 class Main {
     public static void main (String [] args){
-	if(args.length != 1){
-	    System.err.println("Usage: java Driver <inputFile>");
-	    System.exit(1);
-	}
+
 	FileInputStream fis = null;
 	try{
-	    fis = new FileInputStream(args[0]);
-	    MiniJavaParser parser = new   MiniJavaParser(fis);
+		for(int i=0;i<args.length;i++)
+		{
+			fis = new FileInputStream(args[i]);
+			System.out.println("//////////////////////"+args[i]+"//////////////////////");
+			String res;
 
-	    STClassesVisitor STPV = new STClassesVisitor();
-	    Goal root = parser.Goal();
+			MiniJavaParser parser = new   MiniJavaParser(fis);
 
-		System.err.println("Program parsed successfully.");
-	    System.out.println(root.accept(STPV, null));
+			STClassesVisitor STCV = new STClassesVisitor();
+			Goal root = parser.Goal();
 
-		STPVariablesDeclVisitor STPCTV=new STPVariablesDeclVisitor(STPV.GetSTD());
-		System.out.println(root.accept(STPCTV, null));
+			System.err.println("Program parsed successfully.");
+			res=root.accept(STCV, null);
+			if(STCV.GetSTD().getErrorFlag())
+			{
 
-		TypeCheckerVisitor TCV=new TypeCheckerVisitor(STPV.GetSTD());
-		System.out.println(root.accept(TCV, null));
+				System.out.println("////////////////////////////////////////////");
+				continue;
+			}
+
+
+			STPVariablesDeclVisitor STPCTV=new STPVariablesDeclVisitor(STCV.GetSTD());
+			res=root.accept(STPCTV, null);
+			if(STPCTV.GetSTD().getErrorFlag())
+			{
+				System.out.println("////////////////////////////////////////////");
+				continue;
+			}
+
+
+			TypeCheckerVisitor TCV=new TypeCheckerVisitor(STCV.GetSTD());
+			root.accept(TCV, null);
+
+			System.out.println("////////////////////////////////////////////");
+		}
+
 
 
 	}

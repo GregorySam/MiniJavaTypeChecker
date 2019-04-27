@@ -141,18 +141,15 @@ class MethodType extends ScopeType
             if(!ParametersTypes.get(i).equals(parts[i]))
             {
                 if(!parts[i].equals("int") && !parts[i].equals("boolean") && !parts[i].equals("int[]")){
-                    ClassType base_class_type,classType,original_baseclass;
+                    ClassType expected_base_class_type,classType;
 
                     classType=std.GetClass(parts[i]);
-                    base_class_type=std.GetClass(ParametersTypes.get(i));
-                    original_baseclass=classType.GetBaseClass();
+                    expected_base_class_type=std.GetClass(ParametersTypes.get(i));
 
-                    if(original_baseclass==null)
+                    if(classType.IsTypeOf(expected_base_class_type.GetName()))
                     {
-                        return false;
+                        return true;
                     }
-
-                    return base_class_type.GetName().equals(original_baseclass.GetName());
 
 
                 }
@@ -183,6 +180,16 @@ class ClassType extends ScopeType
     }
     public boolean IsTypeOf(String id)
     {
+        if(id.equals(name))
+        {
+            return true;
+        }
+
+        if(BaseClass==null)
+        {
+            return false;
+        }
+        return BaseClass.IsTypeOf(id);
 
     }
 
@@ -289,17 +296,27 @@ public class STDataStructure {
 
     private ScopeType MainVariables;
     private HashMap<String,ClassType> Classes;
+    boolean error_flag;
 
     public STDataStructure(){
         MainVariables=new ScopeType("Main");
-
+        error_flag=false;
         Classes=new HashMap<>();
+    }
+
+    public boolean getErrorFlag(){
+        return error_flag;
     }
 
 
     public ScopeType GetMainVariables()
     {
         return MainVariables;
+    }
+
+    public void SetErrorFlag(boolean f)
+    {
+        error_flag=f;
     }
 
     public boolean InsertClass(String id)

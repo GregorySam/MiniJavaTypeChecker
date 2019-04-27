@@ -24,13 +24,30 @@ public class STClassesVisitor extends GJDepthFirst<String,ScopeType>{
     public String visit(Goal n, ScopeType st){
 
 
-        n.f1.accept(this,null);
+        String res;
 
-        System.out.println("Program evaluated successfully");
+        n.f0.accept(this,null);
+
+        n.f1.accept(this,null);
         return null;
     }
 
     /////////////////////////////////////////////////////////////////////////
+
+    public String visit(MainClass n,ScopeType st)
+    {
+        String id;
+
+        id=n.f1.accept(this,null);
+
+        if(!STD.InsertClass(id))
+        {
+            System.out.println("Class "+id+" has already been declared");
+            STD.SetErrorFlag(true);
+
+        }
+        return null;
+    }
 
 
     ////////////////////////////////////////////////////////////////////////////
@@ -43,8 +60,8 @@ public class STClassesVisitor extends GJDepthFirst<String,ScopeType>{
     public String visit(TypeDeclaration n,ScopeType st)
     {
 
-        n.f0.accept(this,null);
-        return null;
+        return n.f0.accept(this,null);
+
     }
     ////////////////////////////////////////////////////////////////////////////
 
@@ -67,13 +84,14 @@ public class STClassesVisitor extends GJDepthFirst<String,ScopeType>{
 
         if(!STD.InsertClass(id))
         {
-            System.out.println("Error");
-            System.exit(0);
+            System.out.println("Class "+id+" has already been declared");
+            STD.SetErrorFlag(true);
         }
-
-
-
         return null;
+
+
+
+
     }
 
 
@@ -100,8 +118,8 @@ public class STClassesVisitor extends GJDepthFirst<String,ScopeType>{
 
         if(!STD.InsertClass(id))
         {
-            System.out.println("Error");
-            System.exit(0);
+            System.out.println("Class "+id+" has already been declared");
+            STD.SetErrorFlag(true);
         }
 
         ClassType ct,base_ct;
@@ -110,8 +128,8 @@ public class STClassesVisitor extends GJDepthFirst<String,ScopeType>{
 
 
         if(!STD.FindClass(base_id)){
-            System.out.println("Error");
-            System.exit(0);
+            System.out.println("Class "+id+" has not been declared");
+            STD.SetErrorFlag(true);
         }
 
         base_ct=STD.GetClass(base_id);

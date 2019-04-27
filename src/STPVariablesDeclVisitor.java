@@ -13,6 +13,11 @@ public class STPVariablesDeclVisitor extends GJDepthFirst<String,ScopeType> {
         STD=newSTD;
     }
 
+    public STDataStructure GetSTD()
+    {
+        return STD;
+    }
+
     /** Goal
      * Grammar production:
      * f0 -> MainClass()
@@ -22,12 +27,15 @@ public class STPVariablesDeclVisitor extends GJDepthFirst<String,ScopeType> {
 
     public String visit(Goal n, ScopeType st){
 
+        String res;
 
         n.f0.accept(this,null);
+
         n.f1.accept(this,null);
 
-        System.out.println("Program evaluated successfully");
+
         return null;
+
     }
 
     /**MainClass
@@ -54,14 +62,7 @@ public class STPVariablesDeclVisitor extends GJDepthFirst<String,ScopeType> {
 
     public String visit(MainClass n, ScopeType st)
     {
-
-
-
-        if(n.f14.present())
-        {
-            n.f14.accept(this,STD.GetMainVariables());
-        }
-
+        n.f14.accept(this,STD.GetMainVariables());
         return null;
 
     }
@@ -88,8 +89,7 @@ public class STPVariablesDeclVisitor extends GJDepthFirst<String,ScopeType> {
             if(!STD.FindClass(type))
             {
                 System.out.println("Unkown type: "+type+" in "+ST.GetScopeName());
-                System.exit(0);
-
+               STD.SetErrorFlag(true);
             }
         }
 
@@ -97,7 +97,8 @@ public class STPVariablesDeclVisitor extends GJDepthFirst<String,ScopeType> {
         if(!ST.InsertVariable(id,type))
         {
             System.out.println("Identifier "+id+" already declared in "+ST.GetScopeName());
-            System.exit(0);
+            STD.SetErrorFlag(true);
+
         }
         return null;
     }
@@ -192,8 +193,10 @@ public class STPVariablesDeclVisitor extends GJDepthFirst<String,ScopeType> {
         {
             if(!STD.FindClass(type))
             {
-                System.out.println("Undefined type");
-                System.exit(0);
+                System.out.println("Undefined Method type "+type+" at "+MT.GetScopeName());
+                STD.SetErrorFlag(true);
+
+
             }
         }
 
@@ -203,13 +206,14 @@ public class STPVariablesDeclVisitor extends GJDepthFirst<String,ScopeType> {
 
         if(!ct.InsertMethod(MT))
         {
-            System.out.println("Error");
-            System.exit(0);
+            System.out.println("Method at "+MT.GetScopeName()+" already defined or overriding error");
+            STD.SetErrorFlag(true);
+
         }
 
 
 
-        return "";
+        return null;
 
     }
 /////////////////////////////////////////////////////////////////
@@ -283,8 +287,9 @@ public class STPVariablesDeclVisitor extends GJDepthFirst<String,ScopeType> {
 
         if(!mt.InsertVariable(id,type))
         {
-            System.out.println("Error");
-            System.exit(0);
+            System.out.println("Identifier "+id+" already declared in "+st.GetScopeName());
+            STD.SetErrorFlag(true);
+
         }
         mt.ChangeId(type);
 

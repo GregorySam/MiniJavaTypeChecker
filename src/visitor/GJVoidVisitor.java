@@ -16,11 +16,11 @@ public interface GJVoidVisitor<A> {
    // GJ void Auto class visitors
    //
 
-   public void visit(NodeList n, A argu);
-   public void visit(NodeListOptional n, A argu);
-   public void visit(NodeOptional n, A argu);
-   public void visit(NodeSequence n, A argu);
-   public void visit(NodeToken n, A argu);
+   void visit(NodeList n, A argu);
+   void visit(NodeListOptional n, A argu);
+   void visit(NodeOptional n, A argu);
+   void visit(NodeSequence n, A argu);
+   void visit(NodeToken n, A argu);
 
    //
    // User-generated visitor methods below
@@ -31,7 +31,7 @@ public interface GJVoidVisitor<A> {
     * f1 -> ( TypeDeclaration() )*
     * f2 -> <EOF>
     */
-   public void visit(Goal n, A argu);
+   void visit(Goal n, A argu);
 
    /**
     * f0 -> "class"
@@ -53,13 +53,13 @@ public interface GJVoidVisitor<A> {
     * f16 -> "}"
     * f17 -> "}"
     */
-   public void visit(MainClass n, A argu);
+   void visit(MainClass n, A argu);
 
    /**
     * f0 -> ClassDeclaration()
     *       | ClassExtendsDeclaration()
     */
-   public void visit(TypeDeclaration n, A argu);
+   void visit(TypeDeclaration n, A argu);
 
    /**
     * f0 -> "class"
@@ -69,7 +69,7 @@ public interface GJVoidVisitor<A> {
     * f4 -> ( MethodDeclaration() )*
     * f5 -> "}"
     */
-   public void visit(ClassDeclaration n, A argu);
+   void visit(ClassDeclaration n, A argu);
 
    /**
     * f0 -> "class"
@@ -81,14 +81,14 @@ public interface GJVoidVisitor<A> {
     * f6 -> ( MethodDeclaration() )*
     * f7 -> "}"
     */
-   public void visit(ClassExtendsDeclaration n, A argu);
+   void visit(ClassExtendsDeclaration n, A argu);
 
    /**
     * f0 -> Type()
     * f1 -> Identifier()
     * f2 -> ";"
     */
-   public void visit(VarDeclaration n, A argu);
+   void visit(VarDeclaration n, A argu);
 
    /**
     * f0 -> "public"
@@ -105,30 +105,30 @@ public interface GJVoidVisitor<A> {
     * f11 -> ";"
     * f12 -> "}"
     */
-   public void visit(MethodDeclaration n, A argu);
+   void visit(MethodDeclaration n, A argu);
 
    /**
     * f0 -> FormalParameter()
     * f1 -> FormalParameterTail()
     */
-   public void visit(FormalParameterList n, A argu);
+   void visit(FormalParameterList n, A argu);
 
    /**
     * f0 -> Type()
     * f1 -> Identifier()
     */
-   public void visit(FormalParameter n, A argu);
+   void visit(FormalParameter n, A argu);
 
    /**
     * f0 -> ( FormalParameterTerm() )*
     */
-   public void visit(FormalParameterTail n, A argu);
+   void visit(FormalParameterTail n, A argu);
 
    /**
     * f0 -> ","
     * f1 -> FormalParameter()
     */
-   public void visit(FormalParameterTerm n, A argu);
+   void visit(FormalParameterTerm n, A argu);
 
    /**
     * f0 -> ArrayType()
@@ -136,24 +136,24 @@ public interface GJVoidVisitor<A> {
     *       | IntegerType()
     *       | Identifier()
     */
-   public void visit(Type n, A argu);
+   void visit(Type n, A argu);
 
    /**
     * f0 -> "int"
     * f1 -> "["
     * f2 -> "]"
     */
-   public void visit(ArrayType n, A argu);
+   void visit(ArrayType n, A argu);
 
    /**
     * f0 -> "boolean"
     */
-   public void visit(BooleanType n, A argu);
+   void visit(BooleanType n, A argu);
 
    /**
     * f0 -> "int"
     */
-   public void visit(IntegerType n, A argu);
+   void visit(IntegerType n, A argu);
 
    /**
     * f0 -> Block()
@@ -163,14 +163,14 @@ public interface GJVoidVisitor<A> {
     *       | WhileStatement()
     *       | PrintStatement()
     */
-   public void visit(Statement n, A argu);
+   void visit(Statement n, A argu);
 
    /**
     * f0 -> "{"
     * f1 -> ( Statement() )*
     * f2 -> "}"
     */
-   public void visit(Block n, A argu);
+   void visit(Block n, A argu);
 
    /**
     * f0 -> Identifier()
@@ -178,7 +178,7 @@ public interface GJVoidVisitor<A> {
     * f2 -> Expression()
     * f3 -> ";"
     */
-   public void visit(AssignmentStatement n, A argu);
+   void visit(AssignmentStatement n, A argu);
 
    /**
     * f0 -> Identifier()
@@ -189,7 +189,7 @@ public interface GJVoidVisitor<A> {
     * f5 -> Expression()
     * f6 -> ";"
     */
-   public void visit(ArrayAssignmentStatement n, A argu);
+   void visit(ArrayAssignmentStatement n, A argu);
 
    /**
     * f0 -> "if"
@@ -200,7 +200,7 @@ public interface GJVoidVisitor<A> {
     * f5 -> "else"
     * f6 -> Statement()
     */
-   public void visit(IfStatement n, A argu);
+   void visit(IfStatement n, A argu);
 
    /**
     * f0 -> "while"
@@ -209,7 +209,7 @@ public interface GJVoidVisitor<A> {
     * f3 -> ")"
     * f4 -> Statement()
     */
-   public void visit(WhileStatement n, A argu);
+   void visit(WhileStatement n, A argu);
 
    /**
     * f0 -> "System.out.println"
@@ -218,7 +218,7 @@ public interface GJVoidVisitor<A> {
     * f3 -> ")"
     * f4 -> ";"
     */
-   public void visit(PrintStatement n, A argu);
+   void visit(PrintStatement n, A argu);
 
    /**
     * f0 -> AndExpression()
@@ -231,42 +231,42 @@ public interface GJVoidVisitor<A> {
     *       | MessageSend()
     *       | Clause()
     */
-   public void visit(Expression n, A argu);
+   void visit(Expression n, A argu);
 
    /**
     * f0 -> Clause()
     * f1 -> "&&"
     * f2 -> Clause()
     */
-   public void visit(AndExpression n, A argu);
+   void visit(AndExpression n, A argu);
 
    /**
     * f0 -> PrimaryExpression()
     * f1 -> "<"
     * f2 -> PrimaryExpression()
     */
-   public void visit(CompareExpression n, A argu);
+   void visit(CompareExpression n, A argu);
 
    /**
     * f0 -> PrimaryExpression()
     * f1 -> "+"
     * f2 -> PrimaryExpression()
     */
-   public void visit(PlusExpression n, A argu);
+   void visit(PlusExpression n, A argu);
 
    /**
     * f0 -> PrimaryExpression()
     * f1 -> "-"
     * f2 -> PrimaryExpression()
     */
-   public void visit(MinusExpression n, A argu);
+   void visit(MinusExpression n, A argu);
 
    /**
     * f0 -> PrimaryExpression()
     * f1 -> "*"
     * f2 -> PrimaryExpression()
     */
-   public void visit(TimesExpression n, A argu);
+   void visit(TimesExpression n, A argu);
 
    /**
     * f0 -> PrimaryExpression()
@@ -274,14 +274,14 @@ public interface GJVoidVisitor<A> {
     * f2 -> PrimaryExpression()
     * f3 -> "]"
     */
-   public void visit(ArrayLookup n, A argu);
+   void visit(ArrayLookup n, A argu);
 
    /**
     * f0 -> PrimaryExpression()
     * f1 -> "."
     * f2 -> "length"
     */
-   public void visit(ArrayLength n, A argu);
+   void visit(ArrayLength n, A argu);
 
    /**
     * f0 -> PrimaryExpression()
@@ -291,30 +291,30 @@ public interface GJVoidVisitor<A> {
     * f4 -> ( ExpressionList() )?
     * f5 -> ")"
     */
-   public void visit(MessageSend n, A argu);
+   void visit(MessageSend n, A argu);
 
    /**
     * f0 -> Expression()
     * f1 -> ExpressionTail()
     */
-   public void visit(ExpressionList n, A argu);
+   void visit(ExpressionList n, A argu);
 
    /**
     * f0 -> ( ExpressionTerm() )*
     */
-   public void visit(ExpressionTail n, A argu);
+   void visit(ExpressionTail n, A argu);
 
    /**
     * f0 -> ","
     * f1 -> Expression()
     */
-   public void visit(ExpressionTerm n, A argu);
+   void visit(ExpressionTerm n, A argu);
 
    /**
     * f0 -> NotExpression()
     *       | PrimaryExpression()
     */
-   public void visit(Clause n, A argu);
+   void visit(Clause n, A argu);
 
    /**
     * f0 -> IntegerLiteral()
@@ -326,32 +326,32 @@ public interface GJVoidVisitor<A> {
     *       | AllocationExpression()
     *       | BracketExpression()
     */
-   public void visit(PrimaryExpression n, A argu);
+   void visit(PrimaryExpression n, A argu);
 
    /**
     * f0 -> <INTEGER_LITERAL>
     */
-   public void visit(IntegerLiteral n, A argu);
+   void visit(IntegerLiteral n, A argu);
 
    /**
     * f0 -> "true"
     */
-   public void visit(TrueLiteral n, A argu);
+   void visit(TrueLiteral n, A argu);
 
    /**
     * f0 -> "false"
     */
-   public void visit(FalseLiteral n, A argu);
+   void visit(FalseLiteral n, A argu);
 
    /**
     * f0 -> <IDENTIFIER>
     */
-   public void visit(Identifier n, A argu);
+   void visit(Identifier n, A argu);
 
    /**
     * f0 -> "this"
     */
-   public void visit(ThisExpression n, A argu);
+   void visit(ThisExpression n, A argu);
 
    /**
     * f0 -> "new"
@@ -360,7 +360,7 @@ public interface GJVoidVisitor<A> {
     * f3 -> Expression()
     * f4 -> "]"
     */
-   public void visit(ArrayAllocationExpression n, A argu);
+   void visit(ArrayAllocationExpression n, A argu);
 
    /**
     * f0 -> "new"
@@ -368,20 +368,20 @@ public interface GJVoidVisitor<A> {
     * f2 -> "("
     * f3 -> ")"
     */
-   public void visit(AllocationExpression n, A argu);
+   void visit(AllocationExpression n, A argu);
 
    /**
     * f0 -> "!"
     * f1 -> Clause()
     */
-   public void visit(NotExpression n, A argu);
+   void visit(NotExpression n, A argu);
 
    /**
     * f0 -> "("
     * f1 -> Expression()
     * f2 -> ")"
     */
-   public void visit(BracketExpression n, A argu);
+   void visit(BracketExpression n, A argu);
 
 }
 

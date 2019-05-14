@@ -16,11 +16,11 @@ public interface Visitor {
    // void Auto class visitors
    //
 
-   public void visit(NodeList n);
-   public void visit(NodeListOptional n);
-   public void visit(NodeOptional n);
-   public void visit(NodeSequence n);
-   public void visit(NodeToken n);
+   void visit(NodeList n);
+   void visit(NodeListOptional n);
+   void visit(NodeOptional n);
+   void visit(NodeSequence n);
+   void visit(NodeToken n);
 
    //
    // User-generated visitor methods below
@@ -31,7 +31,7 @@ public interface Visitor {
     * f1 -> ( TypeDeclaration() )*
     * f2 -> <EOF>
     */
-   public void visit(Goal n);
+   void visit(Goal n);
 
    /**
     * f0 -> "class"
@@ -53,13 +53,13 @@ public interface Visitor {
     * f16 -> "}"
     * f17 -> "}"
     */
-   public void visit(MainClass n);
+   void visit(MainClass n);
 
    /**
     * f0 -> ClassDeclaration()
     *       | ClassExtendsDeclaration()
     */
-   public void visit(TypeDeclaration n);
+   void visit(TypeDeclaration n);
 
    /**
     * f0 -> "class"
@@ -69,7 +69,7 @@ public interface Visitor {
     * f4 -> ( MethodDeclaration() )*
     * f5 -> "}"
     */
-   public void visit(ClassDeclaration n);
+   void visit(ClassDeclaration n);
 
    /**
     * f0 -> "class"
@@ -81,14 +81,14 @@ public interface Visitor {
     * f6 -> ( MethodDeclaration() )*
     * f7 -> "}"
     */
-   public void visit(ClassExtendsDeclaration n);
+   void visit(ClassExtendsDeclaration n);
 
    /**
     * f0 -> Type()
     * f1 -> Identifier()
     * f2 -> ";"
     */
-   public void visit(VarDeclaration n);
+   void visit(VarDeclaration n);
 
    /**
     * f0 -> "public"
@@ -105,30 +105,30 @@ public interface Visitor {
     * f11 -> ";"
     * f12 -> "}"
     */
-   public void visit(MethodDeclaration n);
+   void visit(MethodDeclaration n);
 
    /**
     * f0 -> FormalParameter()
     * f1 -> FormalParameterTail()
     */
-   public void visit(FormalParameterList n);
+   void visit(FormalParameterList n);
 
    /**
     * f0 -> Type()
     * f1 -> Identifier()
     */
-   public void visit(FormalParameter n);
+   void visit(FormalParameter n);
 
    /**
     * f0 -> ( FormalParameterTerm() )*
     */
-   public void visit(FormalParameterTail n);
+   void visit(FormalParameterTail n);
 
    /**
     * f0 -> ","
     * f1 -> FormalParameter()
     */
-   public void visit(FormalParameterTerm n);
+   void visit(FormalParameterTerm n);
 
    /**
     * f0 -> ArrayType()
@@ -136,24 +136,24 @@ public interface Visitor {
     *       | IntegerType()
     *       | Identifier()
     */
-   public void visit(Type n);
+   void visit(Type n);
 
    /**
     * f0 -> "int"
     * f1 -> "["
     * f2 -> "]"
     */
-   public void visit(ArrayType n);
+   void visit(ArrayType n);
 
    /**
     * f0 -> "boolean"
     */
-   public void visit(BooleanType n);
+   void visit(BooleanType n);
 
    /**
     * f0 -> "int"
     */
-   public void visit(IntegerType n);
+   void visit(IntegerType n);
 
    /**
     * f0 -> Block()
@@ -163,14 +163,14 @@ public interface Visitor {
     *       | WhileStatement()
     *       | PrintStatement()
     */
-   public void visit(Statement n);
+   void visit(Statement n);
 
    /**
     * f0 -> "{"
     * f1 -> ( Statement() )*
     * f2 -> "}"
     */
-   public void visit(Block n);
+   void visit(Block n);
 
    /**
     * f0 -> Identifier()
@@ -178,7 +178,7 @@ public interface Visitor {
     * f2 -> Expression()
     * f3 -> ";"
     */
-   public void visit(AssignmentStatement n);
+   void visit(AssignmentStatement n);
 
    /**
     * f0 -> Identifier()
@@ -189,7 +189,7 @@ public interface Visitor {
     * f5 -> Expression()
     * f6 -> ";"
     */
-   public void visit(ArrayAssignmentStatement n);
+   void visit(ArrayAssignmentStatement n);
 
    /**
     * f0 -> "if"
@@ -200,7 +200,7 @@ public interface Visitor {
     * f5 -> "else"
     * f6 -> Statement()
     */
-   public void visit(IfStatement n);
+   void visit(IfStatement n);
 
    /**
     * f0 -> "while"
@@ -209,7 +209,7 @@ public interface Visitor {
     * f3 -> ")"
     * f4 -> Statement()
     */
-   public void visit(WhileStatement n);
+   void visit(WhileStatement n);
 
    /**
     * f0 -> "System.out.println"
@@ -218,7 +218,7 @@ public interface Visitor {
     * f3 -> ")"
     * f4 -> ";"
     */
-   public void visit(PrintStatement n);
+   void visit(PrintStatement n);
 
    /**
     * f0 -> AndExpression()
@@ -231,42 +231,42 @@ public interface Visitor {
     *       | MessageSend()
     *       | Clause()
     */
-   public void visit(Expression n);
+   void visit(Expression n);
 
    /**
     * f0 -> Clause()
     * f1 -> "&&"
     * f2 -> Clause()
     */
-   public void visit(AndExpression n);
+   void visit(AndExpression n);
 
    /**
     * f0 -> PrimaryExpression()
     * f1 -> "<"
     * f2 -> PrimaryExpression()
     */
-   public void visit(CompareExpression n);
+   void visit(CompareExpression n);
 
    /**
     * f0 -> PrimaryExpression()
     * f1 -> "+"
     * f2 -> PrimaryExpression()
     */
-   public void visit(PlusExpression n);
+   void visit(PlusExpression n);
 
    /**
     * f0 -> PrimaryExpression()
     * f1 -> "-"
     * f2 -> PrimaryExpression()
     */
-   public void visit(MinusExpression n);
+   void visit(MinusExpression n);
 
    /**
     * f0 -> PrimaryExpression()
     * f1 -> "*"
     * f2 -> PrimaryExpression()
     */
-   public void visit(TimesExpression n);
+   void visit(TimesExpression n);
 
    /**
     * f0 -> PrimaryExpression()
@@ -274,14 +274,14 @@ public interface Visitor {
     * f2 -> PrimaryExpression()
     * f3 -> "]"
     */
-   public void visit(ArrayLookup n);
+   void visit(ArrayLookup n);
 
    /**
     * f0 -> PrimaryExpression()
     * f1 -> "."
     * f2 -> "length"
     */
-   public void visit(ArrayLength n);
+   void visit(ArrayLength n);
 
    /**
     * f0 -> PrimaryExpression()
@@ -291,30 +291,30 @@ public interface Visitor {
     * f4 -> ( ExpressionList() )?
     * f5 -> ")"
     */
-   public void visit(MessageSend n);
+   void visit(MessageSend n);
 
    /**
     * f0 -> Expression()
     * f1 -> ExpressionTail()
     */
-   public void visit(ExpressionList n);
+   void visit(ExpressionList n);
 
    /**
     * f0 -> ( ExpressionTerm() )*
     */
-   public void visit(ExpressionTail n);
+   void visit(ExpressionTail n);
 
    /**
     * f0 -> ","
     * f1 -> Expression()
     */
-   public void visit(ExpressionTerm n);
+   void visit(ExpressionTerm n);
 
    /**
     * f0 -> NotExpression()
     *       | PrimaryExpression()
     */
-   public void visit(Clause n);
+   void visit(Clause n);
 
    /**
     * f0 -> IntegerLiteral()
@@ -326,32 +326,32 @@ public interface Visitor {
     *       | AllocationExpression()
     *       | BracketExpression()
     */
-   public void visit(PrimaryExpression n);
+   void visit(PrimaryExpression n);
 
    /**
     * f0 -> <INTEGER_LITERAL>
     */
-   public void visit(IntegerLiteral n);
+   void visit(IntegerLiteral n);
 
    /**
     * f0 -> "true"
     */
-   public void visit(TrueLiteral n);
+   void visit(TrueLiteral n);
 
    /**
     * f0 -> "false"
     */
-   public void visit(FalseLiteral n);
+   void visit(FalseLiteral n);
 
    /**
     * f0 -> <IDENTIFIER>
     */
-   public void visit(Identifier n);
+   void visit(Identifier n);
 
    /**
     * f0 -> "this"
     */
-   public void visit(ThisExpression n);
+   void visit(ThisExpression n);
 
    /**
     * f0 -> "new"
@@ -360,7 +360,7 @@ public interface Visitor {
     * f3 -> Expression()
     * f4 -> "]"
     */
-   public void visit(ArrayAllocationExpression n);
+   void visit(ArrayAllocationExpression n);
 
    /**
     * f0 -> "new"
@@ -368,20 +368,20 @@ public interface Visitor {
     * f2 -> "("
     * f3 -> ")"
     */
-   public void visit(AllocationExpression n);
+   void visit(AllocationExpression n);
 
    /**
     * f0 -> "!"
     * f1 -> Clause()
     */
-   public void visit(NotExpression n);
+   void visit(NotExpression n);
 
    /**
     * f0 -> "("
     * f1 -> Expression()
     * f2 -> ")"
     */
-   public void visit(BracketExpression n);
+   void visit(BracketExpression n);
 
 }
 

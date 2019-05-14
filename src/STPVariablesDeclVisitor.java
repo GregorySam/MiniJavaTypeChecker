@@ -1,9 +1,9 @@
 import syntaxtree.*;
 import visitor.GJDepthFirst;
 
-public class STPVariablesDeclVisitor extends GJDepthFirst<String,ScopeType> {
+class STPVariablesDeclVisitor extends GJDepthFirst<String,ScopeType> {
 
-    private STDataStructure STD;
+    private final STDataStructure STD;
 
 
 
@@ -27,7 +27,6 @@ public class STPVariablesDeclVisitor extends GJDepthFirst<String,ScopeType> {
 
     public String visit(Goal n, ScopeType st){
 
-        String res;
 
         n.f0.accept(this,null);
 
@@ -94,12 +93,12 @@ public class STPVariablesDeclVisitor extends GJDepthFirst<String,ScopeType> {
         }
 
 
-        if(!ST.InsertVariable(id,type))
-        {
-            System.out.println("Identifier "+id+" already declared in "+ST.GetScopeName());
-            STD.SetErrorFlag(true);
-
-        }
+//        if(!ST.InsertVariable(id,type))
+//        {
+//            System.out.println("Identifier "+id+" already declared in "+ST.GetScopeName());
+//            STD.SetErrorFlag(true);
+//
+//        }
         return null;
     }
     ///////////////////////////////////////////////////////////////////
@@ -285,12 +284,12 @@ public class STPVariablesDeclVisitor extends GJDepthFirst<String,ScopeType> {
         id=n.f1.accept(this,null);
 
 
-        if(!mt.InsertVariable(id,type))
-        {
-            System.out.println("Identifier "+id+" already declared in "+st.GetScopeName());
-            STD.SetErrorFlag(true);
-
-        }
+//        if(!mt.InsertVariable(id,type))
+//        {
+//            System.out.println("Identifier "+id+" already declared in "+st.GetScopeName());
+//            STD.SetErrorFlag(true);
+//
+//        }
         mt.ChangeId(type);
 
         return null;

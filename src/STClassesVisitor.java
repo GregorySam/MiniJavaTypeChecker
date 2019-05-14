@@ -2,9 +2,9 @@ import syntaxtree.*;
 import visitor.*;
 
 
-public class STClassesVisitor extends GJDepthFirst<String,ScopeType>{
+class STClassesVisitor extends GJDepthFirst<String,ScopeType>{
 
-    private STDataStructure STD=new STDataStructure();
+    private final STDataStructure STD=new STDataStructure();
 
     public STDataStructure GetSTD()
     {
@@ -24,8 +24,6 @@ public class STClassesVisitor extends GJDepthFirst<String,ScopeType>{
     public String visit(Goal n, ScopeType st){
 
 
-        String res;
-
         n.f0.accept(this,null);
 
         n.f1.accept(this,null);
@@ -40,12 +38,7 @@ public class STClassesVisitor extends GJDepthFirst<String,ScopeType>{
 
         id=n.f1.accept(this,null);
 
-        if(!STD.InsertClass(id))
-        {
-            System.out.println("Class "+id+" has already been declared");
-            STD.SetErrorFlag(true);
-
-        }
+        STD.InsertClass(id);
         return null;
     }
 
@@ -80,19 +73,89 @@ public class STClassesVisitor extends GJDepthFirst<String,ScopeType>{
     public String visit(ClassDeclaration n,ScopeType st)
     {
         String id;
-        id=n.f1.accept(this,null);
+        ClassType ct;
 
-        if(!STD.InsertClass(id))
-        {
-            System.out.println("Class "+id+" has already been declared");
-            STD.SetErrorFlag(true);
-        }
+        id=n.f1.accept(this,null);
+        STD.InsertClass(id);
+
+        ct=STD.GetClass(id);
+
+        n.f3.accept(this,ct);
+        n.f4.accept(this,ct);
+
+
+
+
         return null;
 
-
-
-
     }
+
+    /** VarDeclaration
+     * Grammar production:
+     * f0 -> Type()
+     * f1 -> Identifier()
+     * f2 -> ";"
+     */
+
+
+    public String visit(VarDeclaration n, ScopeType ST)
+    {
+        String type;
+        String id;
+
+
+        type=n.f0.accept(this,null);
+        id=n.f1.accept(this,null);
+
+
+        ST.InsertVariable(id,type);
+        return null;
+    }
+
+    /**
+     * Grammar production:
+     * f0 -> "public"
+     * f1 -> Type()
+     * f2 -> Identifier()
+     * f3 -> "("
+     * f4 -> ( FormalParameterList() )?
+     * f5 -> ")"
+     * f6 -> "{"
+     * f7 -> ( VarDeclaration() )*
+     * f8 -> ( Statement() )*
+     * f9 -> "return"
+     * f10 -> Expression()
+     * f11 -> ";"
+     * f12 -> "}"
+     */
+
+    public String visit(MethodDeclaration n, ScopeType st)
+    {
+        String type;
+        String id;
+
+        ClassType ct;
+        ct=(ClassType)st;
+
+
+        type=n.f1.accept(this,null);
+        id=n.f2.accept(this,null);
+
+        MethodType MT=new MethodType(id,type,ct);
+        ct.InsertMethod(MT);
+
+
+
+        n.f4.accept(this,MT);
+        n.f7.accept(this,MT);
+
+
+
+
+        return null;
+    }
+
+
 
 
 /////////////////////////////////////////////////////////////////
@@ -113,29 +176,17 @@ public class STClassesVisitor extends GJDepthFirst<String,ScopeType>{
     {
 
         String id,base_id;
+
         id=n.f1.accept(this,null);
         base_id=n.f3.accept(this,null);
 
-        if(!STD.InsertClass(id))
-        {
-            System.out.println("Class "+id+" has already been declared");
-            STD.SetErrorFlag(true);
-        }
+        STD.InsertClass(id);
 
         ClassType ct,base_ct;
 
         ct=STD.GetClass(id);
 
-
-        if(!STD.FindClass(base_id)){
-            System.out.println("Class "+id+" has not been declared");
-            STD.SetErrorFlag(true);
-        }
-
         base_ct=STD.GetClass(base_id);
-
-
-
         ct.SetBaseClass(base_ct);
 
 
@@ -144,6 +195,52 @@ public class STClassesVisitor extends GJDepthFirst<String,ScopeType>{
     }
 
     //////////////////////////////////////////////////////////////////////
+
+    public String visit(FormalParameterList n,ScopeType st)
+    {
+
+        MethodType mt=(MethodType)st;
+
+
+        n.f0.accept(this,mt);
+        n.f1.accept(this,mt);
+        return null;
+
+    }
+
+    public String visit(FormalParameter n,ScopeType st)
+    {
+        String id,type;
+
+
+        MethodType mt=(MethodType)st;
+
+        type=n.f0.accept(this,null);
+        id=n.f1.accept(this,null);
+
+
+        mt.InsertVariable(id,type);
+
+        return null;
+    }
+
+    public String visit(FormalParameterTail n,ScopeType st)
+    {
+        MethodType mt=(MethodType)st;
+
+
+        n.f0.accept(this,mt);
+        return null;
+    }
+
+    public String visit(FormalParameterTerm n,ScopeType st)
+    {
+        MethodType mt=(MethodType)st;
+
+        n.f1.accept(this,mt);
+        return null;
+    }
+
 
 
 

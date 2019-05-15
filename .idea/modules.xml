@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MiniJavaTypeChecker.iml" filepath="$PROJECT_DIR$/MiniJavaTypeChecker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MiniJavaIR.iml" filepath="$PROJECT_DIR$/MiniJavaIR.iml" />
     </modules>
   </component>
 </project>

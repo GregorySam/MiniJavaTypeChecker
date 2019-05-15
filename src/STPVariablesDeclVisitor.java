@@ -93,12 +93,12 @@ class STPVariablesDeclVisitor extends GJDepthFirst<String,ScopeType> {
         }
 
 
-        if(!ST.InsertVariable(id,type))
-        {
-            System.out.println("Identifier "+id+" already declared in "+ST.GetScopeName());
-            STD.SetErrorFlag(true);
-
-        }
+//        if(!ST.InsertVariable(id,type))
+//        {
+//            System.out.println("Identifier "+id+" already declared in "+ST.GetScopeName());
+//            STD.SetErrorFlag(true);
+//
+//        }
         return null;
     }
     ///////////////////////////////////////////////////////////////////
@@ -284,12 +284,12 @@ class STPVariablesDeclVisitor extends GJDepthFirst<String,ScopeType> {
         id=n.f1.accept(this,null);
 
 
-        if(!mt.InsertVariable(id,type))
-        {
-            System.out.println("Identifier "+id+" already declared in "+st.GetScopeName());
-            STD.SetErrorFlag(true);
-
-        }
+//        if(!mt.InsertVariable(id,type))
+//        {
+//            System.out.println("Identifier "+id+" already declared in "+st.GetScopeName());
+//            STD.SetErrorFlag(true);
+//
+//        }
         mt.ChangeId(type);
 
         return null;

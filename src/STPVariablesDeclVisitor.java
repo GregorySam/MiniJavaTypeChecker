@@ -1,9 +1,9 @@
 import syntaxtree.*;
 import visitor.GJDepthFirst;
 
-public class STPVariablesDeclVisitor extends GJDepthFirst<String,ScopeType> {
+class STPVariablesDeclVisitor extends GJDepthFirst<String,ScopeType> {
 
-    private STDataStructure STD;
+    private final STDataStructure STD;
 
 
 
@@ -27,7 +27,6 @@ public class STPVariablesDeclVisitor extends GJDepthFirst<String,ScopeType> {
 
     public String visit(Goal n, ScopeType st){
 
-        String res;
 
         n.f0.accept(this,null);
 

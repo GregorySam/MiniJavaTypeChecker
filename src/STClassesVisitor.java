@@ -2,9 +2,9 @@ import syntaxtree.*;
 import visitor.*;
 
 
-public class STClassesVisitor extends GJDepthFirst<String,ScopeType>{
+class STClassesVisitor extends GJDepthFirst<String,ScopeType>{
 
-    private STDataStructure STD=new STDataStructure();
+    private final STDataStructure STD=new STDataStructure();
 
     public STDataStructure GetSTD()
     {
@@ -23,8 +23,6 @@ public class STClassesVisitor extends GJDepthFirst<String,ScopeType>{
 
     public String visit(Goal n, ScopeType st){
 
-
-        String res;
 
         n.f0.accept(this,null);
 

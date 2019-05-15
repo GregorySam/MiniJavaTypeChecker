@@ -16,11 +16,11 @@ public interface GJVisitor<R,A> {
    // GJ Auto class visitors
    //
 
-   public R visit(NodeList n, A argu);
-   public R visit(NodeListOptional n, A argu);
-   public R visit(NodeOptional n, A argu);
-   public R visit(NodeSequence n, A argu);
-   public R visit(NodeToken n, A argu);
+   R visit(NodeList n, A argu);
+   R visit(NodeListOptional n, A argu);
+   R visit(NodeOptional n, A argu);
+   R visit(NodeSequence n, A argu);
+   R visit(NodeToken n, A argu);
 
    //
    // User-generated visitor methods below
@@ -31,7 +31,7 @@ public interface GJVisitor<R,A> {
     * f1 -> ( TypeDeclaration() )*
     * f2 -> <EOF>
     */
-   public R visit(Goal n, A argu);
+   R visit(Goal n, A argu);
 
    /**
     * f0 -> "class"
@@ -53,13 +53,13 @@ public interface GJVisitor<R,A> {
     * f16 -> "}"
     * f17 -> "}"
     */
-   public R visit(MainClass n, A argu);
+   R visit(MainClass n, A argu);
 
    /**
     * f0 -> ClassDeclaration()
     *       | ClassExtendsDeclaration()
     */
-   public R visit(TypeDeclaration n, A argu);
+   R visit(TypeDeclaration n, A argu);
 
    /**
     * f0 -> "class"
@@ -69,7 +69,7 @@ public interface GJVisitor<R,A> {
     * f4 -> ( MethodDeclaration() )*
     * f5 -> "}"
     */
-   public R visit(ClassDeclaration n, A argu);
+   R visit(ClassDeclaration n, A argu);
 
    /**
     * f0 -> "class"
@@ -81,14 +81,14 @@ public interface GJVisitor<R,A> {
     * f6 -> ( MethodDeclaration() )*
     * f7 -> "}"
     */
-   public R visit(ClassExtendsDeclaration n, A argu);
+   R visit(ClassExtendsDeclaration n, A argu);
 
    /**
     * f0 -> Type()
     * f1 -> Identifier()
     * f2 -> ";"
     */
-   public R visit(VarDeclaration n, A argu);
+   R visit(VarDeclaration n, A argu);
 
    /**
     * f0 -> "public"
@@ -105,30 +105,30 @@ public interface GJVisitor<R,A> {
     * f11 -> ";"
     * f12 -> "}"
     */
-   public R visit(MethodDeclaration n, A argu);
+   R visit(MethodDeclaration n, A argu);
 
    /**
     * f0 -> FormalParameter()
     * f1 -> FormalParameterTail()
     */
-   public R visit(FormalParameterList n, A argu);
+   R visit(FormalParameterList n, A argu);
 
    /**
     * f0 -> Type()
     * f1 -> Identifier()
     */
-   public R visit(FormalParameter n, A argu);
+   R visit(FormalParameter n, A argu);
 
    /**
     * f0 -> ( FormalParameterTerm() )*
     */
-   public R visit(FormalParameterTail n, A argu);
+   R visit(FormalParameterTail n, A argu);
 
    /**
     * f0 -> ","
     * f1 -> FormalParameter()
     */
-   public R visit(FormalParameterTerm n, A argu);
+   R visit(FormalParameterTerm n, A argu);
 
    /**
     * f0 -> ArrayType()
@@ -136,24 +136,24 @@ public interface GJVisitor<R,A> {
     *       | IntegerType()
     *       | Identifier()
     */
-   public R visit(Type n, A argu);
+   R visit(Type n, A argu);
 
    /**
     * f0 -> "int"
     * f1 -> "["
     * f2 -> "]"
     */
-   public R visit(ArrayType n, A argu);
+   R visit(ArrayType n, A argu);
 
    /**
     * f0 -> "boolean"
     */
-   public R visit(BooleanType n, A argu);
+   R visit(BooleanType n, A argu);
 
    /**
     * f0 -> "int"
     */
-   public R visit(IntegerType n, A argu);
+   R visit(IntegerType n, A argu);
 
    /**
     * f0 -> Block()
@@ -163,14 +163,14 @@ public interface GJVisitor<R,A> {
     *       | WhileStatement()
     *       | PrintStatement()
     */
-   public R visit(Statement n, A argu);
+   R visit(Statement n, A argu);
 
    /**
     * f0 -> "{"
     * f1 -> ( Statement() )*
     * f2 -> "}"
     */
-   public R visit(Block n, A argu);
+   R visit(Block n, A argu);
 
    /**
     * f0 -> Identifier()
@@ -178,7 +178,7 @@ public interface GJVisitor<R,A> {
     * f2 -> Expression()
     * f3 -> ";"
     */
-   public R visit(AssignmentStatement n, A argu);
+   R visit(AssignmentStatement n, A argu);
 
    /**
     * f0 -> Identifier()
@@ -189,7 +189,7 @@ public interface GJVisitor<R,A> {
     * f5 -> Expression()
     * f6 -> ";"
     */
-   public R visit(ArrayAssignmentStatement n, A argu);
+   R visit(ArrayAssignmentStatement n, A argu);
 
    /**
     * f0 -> "if"
@@ -200,7 +200,7 @@ public interface GJVisitor<R,A> {
     * f5 -> "else"
     * f6 -> Statement()
     */
-   public R visit(IfStatement n, A argu);
+   R visit(IfStatement n, A argu);
 
    /**
     * f0 -> "while"
@@ -209,7 +209,7 @@ public interface GJVisitor<R,A> {
     * f3 -> ")"
     * f4 -> Statement()
     */
-   public R visit(WhileStatement n, A argu);
+   R visit(WhileStatement n, A argu);
 
    /**
     * f0 -> "System.out.println"
@@ -218,7 +218,7 @@ public interface GJVisitor<R,A> {
     * f3 -> ")"
     * f4 -> ";"
     */
-   public R visit(PrintStatement n, A argu);
+   R visit(PrintStatement n, A argu);
 
    /**
     * f0 -> AndExpression()
@@ -231,42 +231,42 @@ public interface GJVisitor<R,A> {
     *       | MessageSend()
     *       | Clause()
     */
-   public R visit(Expression n, A argu);
+   R visit(Expression n, A argu);
 
    /**
     * f0 -> Clause()
     * f1 -> "&&"
     * f2 -> Clause()
     */
-   public R visit(AndExpression n, A argu);
+   R visit(AndExpression n, A argu);
 
    /**
     * f0 -> PrimaryExpression()
     * f1 -> "<"
     * f2 -> PrimaryExpression()
     */
-   public R visit(CompareExpression n, A argu);
+   R visit(CompareExpression n, A argu);
 
    /**
     * f0 -> PrimaryExpression()
     * f1 -> "+"
     * f2 -> PrimaryExpression()
     */
-   public R visit(PlusExpression n, A argu);
+   R visit(PlusExpression n, A argu);
 
    /**
     * f0 -> PrimaryExpression()
     * f1 -> "-"
     * f2 -> PrimaryExpression()
     */
-   public R visit(MinusExpression n, A argu);
+   R visit(MinusExpression n, A argu);
 
    /**
     * f0 -> PrimaryExpression()
     * f1 -> "*"
     * f2 -> PrimaryExpression()
     */
-   public R visit(TimesExpression n, A argu);
+   R visit(TimesExpression n, A argu);
 
    /**
     * f0 -> PrimaryExpression()
@@ -274,14 +274,14 @@ public interface GJVisitor<R,A> {
     * f2 -> PrimaryExpression()
     * f3 -> "]"
     */
-   public R visit(ArrayLookup n, A argu);
+   R visit(ArrayLookup n, A argu);
 
    /**
     * f0 -> PrimaryExpression()
     * f1 -> "."
     * f2 -> "length"
     */
-   public R visit(ArrayLength n, A argu);
+   R visit(ArrayLength n, A argu);
 
    /**
     * f0 -> PrimaryExpression()
@@ -291,30 +291,30 @@ public interface GJVisitor<R,A> {
     * f4 -> ( ExpressionList() )?
     * f5 -> ")"
     */
-   public R visit(MessageSend n, A argu);
+   R visit(MessageSend n, A argu);
 
    /**
     * f0 -> Expression()
     * f1 -> ExpressionTail()
     */
-   public R visit(ExpressionList n, A argu);
+   R visit(ExpressionList n, A argu);
 
    /**
     * f0 -> ( ExpressionTerm() )*
     */
-   public R visit(ExpressionTail n, A argu);
+   R visit(ExpressionTail n, A argu);
 
    /**
     * f0 -> ","
     * f1 -> Expression()
     */
-   public R visit(ExpressionTerm n, A argu);
+   R visit(ExpressionTerm n, A argu);
 
    /**
     * f0 -> NotExpression()
     *       | PrimaryExpression()
     */
-   public R visit(Clause n, A argu);
+   R visit(Clause n, A argu);
 
    /**
     * f0 -> IntegerLiteral()
@@ -326,32 +326,32 @@ public interface GJVisitor<R,A> {
     *       | AllocationExpression()
     *       | BracketExpression()
     */
-   public R visit(PrimaryExpression n, A argu);
+   R visit(PrimaryExpression n, A argu);
 
    /**
     * f0 -> <INTEGER_LITERAL>
     */
-   public R visit(IntegerLiteral n, A argu);
+   R visit(IntegerLiteral n, A argu);
 
    /**
     * f0 -> "true"
     */
-   public R visit(TrueLiteral n, A argu);
+   R visit(TrueLiteral n, A argu);
 
    /**
     * f0 -> "false"
     */
-   public R visit(FalseLiteral n, A argu);
+   R visit(FalseLiteral n, A argu);
 
    /**
     * f0 -> <IDENTIFIER>
     */
-   public R visit(Identifier n, A argu);
+   R visit(Identifier n, A argu);
 
    /**
     * f0 -> "this"
     */
-   public R visit(ThisExpression n, A argu);
+   R visit(ThisExpression n, A argu);
 
    /**
     * f0 -> "new"
@@ -360,7 +360,7 @@ public interface GJVisitor<R,A> {
     * f3 -> Expression()
     * f4 -> "]"
     */
-   public R visit(ArrayAllocationExpression n, A argu);
+   R visit(ArrayAllocationExpression n, A argu);
 
    /**
     * f0 -> "new"
@@ -368,19 +368,19 @@ public interface GJVisitor<R,A> {
     * f2 -> "("
     * f3 -> ")"
     */
-   public R visit(AllocationExpression n, A argu);
+   R visit(AllocationExpression n, A argu);
 
    /**
     * f0 -> "!"
     * f1 -> Clause()
     */
-   public R visit(NotExpression n, A argu);
+   R visit(NotExpression n, A argu);
 
    /**
     * f0 -> "("
     * f1 -> Expression()
     * f2 -> ")"
     */
-   public R visit(BracketExpression n, A argu);
+   R visit(BracketExpression n, A argu);
 
 }

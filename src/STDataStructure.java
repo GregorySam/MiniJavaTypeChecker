@@ -1,19 +1,13 @@
 import java.util.*;
 
 
-
-
-
-
-
-
 class ScopeType
 {
-    protected LinkedHashMap<String, String> Variables;
-    private String scopename;
+    final LinkedHashMap<String, String> Variables;
+    private final String scopename;
 
 
-    public boolean InsertVariable(String id, String p)
+    public boolean InsertVariable(String id, String p)              //Insert viaribale if dows not exist
     {
         if(Variables.containsKey(id))
         {
@@ -26,7 +20,7 @@ class ScopeType
         }
     }
 
-    public String GetScopeName(){
+    public String GetScopeName(){               //get class-method name
         return scopename;
     }
 
@@ -37,14 +31,7 @@ class ScopeType
         Variables =new LinkedHashMap<>();
     }
 
-    public LinkedHashMap<String,String> GetVariables()
-    {
-        return Variables;
-    }
-
-
-
-    public String GetType(String id)
+    public String GetType(String id)            //return type of identifier
     {
        return Variables.get(id);
     }
@@ -55,11 +42,11 @@ class ScopeType
 
 class MethodType extends ScopeType
 {
-    private String name;
+    private final String name;
     private String id;
-    private String type;
-    private List<String> ParametersTypes;
-    private ClassType ClassPertain;
+    private final String type;
+    private final List<String> ParametersTypes;
+    private final ClassType ClassPertain;
 
     public MethodType(String name,String type,ClassType CT)
     {
@@ -73,7 +60,7 @@ class MethodType extends ScopeType
     }
 
     @Override
-    public String GetType(String id)
+    public String GetType(String id)                        //get type of variable if type not found search in class and bas class
     {
         if(Variables.get(id)==null)
         {
@@ -92,7 +79,7 @@ class MethodType extends ScopeType
     }
 
 
-    public void ChangeId(String a)
+    public void ChangeId(String a)                  //id of function
     {
         id=id+a;
         ParametersTypes.add(a);
@@ -119,7 +106,7 @@ class MethodType extends ScopeType
         return ClassPertain;
     }
 
-    public boolean CheckParametersMatch(String params,STDataStructure std){
+    public boolean CheckParametersMatch(String params,STDataStructure std){            //check if call parametrs match declared parameters
 
         if(params==null && ParametersTypes.size()==0)
         {
@@ -164,9 +151,9 @@ class MethodType extends ScopeType
 
 class ClassType extends ScopeType
 {
-    private String name;
+    private final String name;
     private ClassType BaseClass;
-    private LinkedHashMap<String, MethodType> Methods;
+    private final LinkedHashMap<String, MethodType> Methods;
 
     private int var_offset;
     private int methods_offset;
@@ -193,7 +180,7 @@ class ClassType extends ScopeType
 
     }
 
-    static private int GetSize(String type)
+    static private int GetSize(String type)         //get offset size of types
     {
         if(type.equals("int"))
         {
@@ -212,19 +199,19 @@ class ClassType extends ScopeType
         }
     }
 
-    public int GetVariablesOffset()
+    private int GetVariablesOffset()
     {
         return var_offset;
     }
 
-    public int GetMethodsOffset()
+    private int GetMethodsOffset()
     {
         return methods_offset;
     }
 
 
 
-    public void PrintOffsets()
+    public void PrintOffsets()          //print fields offsets
     {
         int var_offset,meth_offset;
 
@@ -279,14 +266,15 @@ class ClassType extends ScopeType
 
     }
 
-    public boolean InsertMethod(MethodType MT)
+    public boolean InsertMethod(MethodType MT)      //inseret method in map
     {
 
         if(Methods.containsKey(MT.GetName())) {
             return false;
         }
 
-
+        //if there is no base class put method else
+        // check if same exists-override
         if(BaseClass==null)
         {
             Methods.put(MT.GetName(),MT);
@@ -332,7 +320,7 @@ class ClassType extends ScopeType
         BaseClass=id;
     }
 
-    public MethodType GetMethod(String id) {
+    public MethodType GetMethod(String id) {            //search for method in curent class or base class
 
         if(Methods.get(id)==null)
         {
@@ -349,7 +337,7 @@ class ClassType extends ScopeType
         return Methods.get(id);
     }
     @Override
-    public String GetType(String id)
+    public String GetType(String id)                    //get type of identifier
     {
         if(Variables.get(id)==null)
         {
@@ -366,23 +354,14 @@ class ClassType extends ScopeType
         return Variables.get(id);
     }
 
-    public LinkedHashMap<String, MethodType> GetMethods()
-    {
-        return Methods;
-    }
-
-    public ClassType GetBaseClass(){return  BaseClass;}
-
-
-
 }
 
 
 public class STDataStructure {
 
-    private ScopeType MainVariables;
-    private LinkedHashMap<String,ClassType> Classes;
-    boolean error_flag;
+    private final ScopeType MainVariables;
+    private final LinkedHashMap<String,ClassType> Classes;
+    private boolean error_flag;
 
 
     public STDataStructure(){

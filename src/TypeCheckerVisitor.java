@@ -1,15 +1,14 @@
 import visitor.GJDepthFirst;
 import syntaxtree.*;
 
-public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
+class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
 
 
-        private STDataStructure STD;
+        private final STDataStructure STD;
 
-        public STDataStructure GetSTD()
-    {
-        return STD;
-    }
+        public STDataStructure GetSTD() {
+            return STD;
+         }
 
 
         public TypeCheckerVisitor(STDataStructure newSTD)
@@ -35,10 +34,7 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
 
                     ClassType ct=STD.GetClass(exp2);
 
-                    if(!ct.IsTypeOf(exp1))
-                    {
-                        return false;
-                    }
+                    return ct.IsTypeOf(exp1);
 
                 }
 
@@ -499,7 +495,7 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
     {
         String pe,id,parameters;
         ClassType ct;
-        MethodType mt=null;
+        MethodType mt;
 
         pe=n.f0.accept(this,st);
 
@@ -663,7 +659,6 @@ public class TypeCheckerVisitor extends GJDepthFirst<String,ScopeType> {
     public String visit(AllocationExpression n,ScopeType st)
     {
         String id;
-        ClassType ct;
 
         id=n.f1.accept(this,st);
 

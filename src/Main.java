@@ -7,20 +7,26 @@ class Main {
     public static void main (String [] args){
 
 	FileInputStream fis = null;
+
+	if(args.length==0)							//check parameters
+	{
+		System.out.println("Usage: java Main [file1] [file1] [file2] [file3]..");
+		System.exit(0);
+	}
 	try{
-		for(int i=0;i<args.length;i++)
+		for(int i=0;i<args.length;i++)						//for every file
 		{
 			fis = new FileInputStream(args[i]);
 			System.out.println("//////////////////////"+args[i]+"//////////////////////");
-			String res;
+
 
 			MiniJavaParser parser = new   MiniJavaParser(fis);
 
 			STClassesVisitor STCV = new STClassesVisitor();
-			Goal root = parser.Goal();
+			Goal root = parser.Goal();						//check syntax
 
 			System.err.println("Program parsed successfully.");
-			res=root.accept(STCV, null);
+			root.accept(STCV, null);						//check class declaration
 			if(STCV.GetSTD().getErrorFlag())
 			{
 
@@ -30,7 +36,7 @@ class Main {
 
 
 			STPVariablesDeclVisitor STPCTV=new STPVariablesDeclVisitor(STCV.GetSTD());
-			res=root.accept(STPCTV, null);
+			root.accept(STPCTV, null);				//check variables declartion
 			if(STPCTV.GetSTD().getErrorFlag())
 			{
 				System.out.println("////////////////////////////////////////////"+"\n");
@@ -38,7 +44,7 @@ class Main {
 			}
 
 
-			TypeCheckerVisitor TCV=new TypeCheckerVisitor(STCV.GetSTD());
+			TypeCheckerVisitor TCV=new TypeCheckerVisitor(STCV.GetSTD());		//check statements and assignments
 			root.accept(TCV, null);
 
 			if(TCV.GetSTD().getErrorFlag())
@@ -48,7 +54,7 @@ class Main {
 			}
 			else{
 				System.err.println("Program evaluated successfully.");
-				TCV.GetSTD().PrintOffsets();
+				TCV.GetSTD().PrintOffsets();								//Print classes offsets
 			}
 
 			System.out.println("////////////////////////////////////////////"+"\n");

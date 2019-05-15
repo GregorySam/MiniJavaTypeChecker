@@ -338,7 +338,7 @@ class ClassType extends ScopeType
                 pw.print(", ");
             }
             i++;
-            
+
         }
         pw.println("]");
     }

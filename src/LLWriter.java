@@ -9,7 +9,7 @@ class LLWriter extends GJDepthFirst<String,ScopeType> {
 
 
     private final STDataStructure STD;
-    private final PrintWriter fis;
+    private final PrintWriter pw;
 
 
     public STDataStructure GetSTD() {
@@ -17,10 +17,10 @@ class LLWriter extends GJDepthFirst<String,ScopeType> {
          }
 
 
-    public LLWriter(STDataStructure newSTD, PrintWriter fi)
+    public LLWriter(STDataStructure newSTD, PrintWriter fo)
     {
         STD=newSTD;
-        fis=fi;
+        pw=fo;
     }
 
 
@@ -34,7 +34,7 @@ class LLWriter extends GJDepthFirst<String,ScopeType> {
 
     public String visit(Goal n, ScopeType st){
 
-        //wrtite vtables
+        STD.WriteV_TablesToFile(pw);
 
 
         ScopeType main_st=STD.GetMainVariables();

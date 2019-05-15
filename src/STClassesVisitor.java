@@ -220,6 +220,7 @@ class STClassesVisitor extends GJDepthFirst<String,ScopeType>{
 
 
         mt.InsertVariable(id,type);
+        mt.ChangeId(type);
 
         return null;
     }
@@ -239,6 +240,24 @@ class STClassesVisitor extends GJDepthFirst<String,ScopeType>{
 
         n.f1.accept(this,mt);
         return null;
+    }
+
+
+    public String visit(IntegerType n, ScopeType st)
+    {
+
+        return n.f0.tokenImage;
+    }
+
+    public String visit(BooleanType n, ScopeType st)
+    {
+
+        return n.f0.tokenImage;
+    }
+
+    public String visit(ArrayType n, ScopeType st)
+    {
+        return (n.f0.tokenImage+n.f1.tokenImage+n.f2.tokenImage);
     }
 
 

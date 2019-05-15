@@ -12,10 +12,11 @@ class Main {
 	static private PrintWriter GetLLFile(String javaFileName){
 		PrintWriter writer=null;
 
-		String fn[] = javaFileName.split(".", 1);
+		String[] fn = javaFileName.split("\\.");
+
 
 		try {
-			writer = new PrintWriter(fn[0]+".ll");
+			writer = new PrintWriter("../outfiles/"+fn[0]+".ll");
 		}
 		catch(FileNotFoundException ex) {
 			System.err.println(ex.getMessage());

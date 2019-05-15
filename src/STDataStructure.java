@@ -131,8 +131,6 @@ class MethodType extends ScopeType
             parameters=parameters+","+GetLlvmType(par);
         }
 
-
-
         pw.print("i8* bitcast ("+type+" (i8*"+parameters+")* @"+ClassPertain.GetName()+"."+this.name+" to "+"i8*)");
 
     }
@@ -144,7 +142,7 @@ class ClassType extends ScopeType
 {
     private final String name;
     private ClassType BaseClass;
-    private final LinkedHashMap<String, MethodType> Methods;
+    private LinkedHashMap<String, MethodType> Methods;
 
     private int var_offset;
     private LinkedHashMap<String ,Integer> VariablesOffsets;
@@ -153,7 +151,10 @@ class ClassType extends ScopeType
     private LinkedHashMap<String ,Integer> MethodsOffsets;
 
 
-
+    public LinkedHashMap<String, MethodType> getMethods()
+    {
+        return Methods;
+    }
 
     public ClassType(String n)
     {
@@ -224,7 +225,8 @@ class ClassType extends ScopeType
         if(BaseClass==null)
         {
             Methods.put(MT.GetName(),MT);
-            MethodsOffsets.put(MT.GetName(),methods_offset+8*Methods.size());
+            MethodsOffsets.put(MT.GetName(),methods_offset);
+            methods_offset=methods_offset+8;
             return true;
         }
 
@@ -234,7 +236,8 @@ class ClassType extends ScopeType
 
         if(base_class_meth==null) {
             Methods.put(MT.GetName(),MT);
-            MethodsOffsets.put(MT.GetName(),methods_offset+8*Methods.size());
+            MethodsOffsets.put(MT.GetName(),methods_offset);
+            methods_offset=methods_offset+8;
             return true;
         }
         else {
@@ -271,6 +274,7 @@ class ClassType extends ScopeType
         BaseClass=id;
         var_offset=BaseClass.GetVariablesOffset();
         methods_offset=BaseClass.GetMethodsOffset();
+        Methods=BaseClass.getMethods();
     }
 
     public MethodType GetMethod(String id) {            //search for method in curent class or base class
@@ -403,9 +407,11 @@ public class STDataStructure {
             ClassType ct=entry.getValue();
 
             pw.print("@."+key+"_vtable = global ");
-            //ct.PrinttoVtable(PrintWriter)
+            ct.PrintV_Table(pw);
 
         }
+        pw.println();
+        pw.println();
         pw.println("declare i8* @calloc(i32, i32)\n" +
                 "declare i32 @printf(i8*, ...)\n" +
                 "declare void @exit(i32)\n" +
@@ -424,6 +430,7 @@ public class STDataStructure {
                 "    call void @exit(i32 1)\n" +
                 "    ret void\n" +
                 "}");
+        pw.close();
     }
 
 
